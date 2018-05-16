@@ -1,14 +1,14 @@
 'use strict';
 const Command = require('../structures/Command');
 
-//Kills the bot, just in case it's acting up ;)
+//For getting user information (account creation date, server join date, etc.)
 module.exports = function command(requires)
 {
   return new Command({
     name: 'User Info',
     inline: false,
     alias: ['ui'],
-    description: '[<mention user>]Gets information for a user that is mentioned, or the person that used the command. If there is no mention, then it will get the avatar of the person who used the command.',
+    description: '[<mention user>]Gets information for a user that is mentioned, or the person that used the command. If there is no mention, then it will get the information of the person who used the command.',
     permission: 'public',
     action: function(details)
     {

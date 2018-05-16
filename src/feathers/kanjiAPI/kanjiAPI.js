@@ -86,7 +86,6 @@ module.exports = function feather(requires)
         let meanings = {name: 'Meanings', value: body[0].meanings.join('\n'), inline: true};
         fields.push(meanings);
         emb.fields = fields;
-        console.log(emb);
         return emb;
       }
       else
