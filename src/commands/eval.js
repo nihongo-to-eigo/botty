@@ -16,7 +16,7 @@ module.exports = function command(requires)
       const echo = function(str)
       {
         bot.sendMessage(details.channelID, {
-          message: str
+          content: str
         });
       };
       if(details.input === '') {return;}
@@ -25,13 +25,13 @@ module.exports = function command(requires)
         try
         {
           bot.sendMessage(details.channelID, {
-            message: eval(details.input)
+            content: eval(details.input)
           });
         }
         catch(err)
         {
           bot.sendMessage(details.channelID, {
-            message: err
+            content: err
           });
         }
       }
