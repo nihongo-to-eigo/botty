@@ -1,7 +1,7 @@
 'use strict';
 const Command = require('../structures/Command');
 
-//Kills the bot, just in case it's acting up ;)
+//Searching japanese-english dictionary
 module.exports = function command(requires)
 {
   return new Command({
