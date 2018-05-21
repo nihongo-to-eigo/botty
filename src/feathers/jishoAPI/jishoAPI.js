@@ -185,9 +185,24 @@ module.exports = function feather(requires)
     let fields = [];
     try
     {
-      if(api.data[num] == undefined)
+      if(api.meta === undefined || api.meta.status != 200) {
+        throw 'Bad API response';
+      } if(api.data.length == 0)
       {
-        throw 'api.data is undefined';
+        fields = [{name: 'Error', value:'No results found for this query, it may not exist in the dictionary. Check on jisho.org; if it does exist there, please contact CyberRonin', inline:true}];
+      }
+      else if(num >= api.data.length)
+      {
+        let v = 'There aren\'t enough entries in the dictionary to grab number ' + (num+1)+'.'
+        if(api.data.length == 1)
+        {
+          v += 'There is only one entry'
+        }
+        else
+        {
+          v += 'There are only  '+(api.data.length)+' entry.';
+        }
+        fields = [{name: 'Error', value:v, inline:true}];
       }
       else
       {
