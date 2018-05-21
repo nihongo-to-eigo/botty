@@ -20,7 +20,7 @@ module.exports = function feather(requires)
         resolve(prettyDisplay(data, num));
       }).catch(reject);
     });
-  }
+  };
   feather.listJisho = function(word, dmBool)
   {
     return new Promise((resolve, reject) =>
@@ -30,7 +30,7 @@ module.exports = function feather(requires)
         resolve(listJapanese(data,dmBool));
       }).catch(reject);
     });
-  }
+  };
   //helper functions
   const jishoReq = function(word)
   {
@@ -50,7 +50,7 @@ module.exports = function feather(requires)
           }
         }).catch(reject);
     });
-  }
+  };
   //list the japanese readings
   const listJapanese = function(api, dmBool)
   {
@@ -68,7 +68,7 @@ module.exports = function feather(requires)
       }
       list += line;
     }
-    emb.description = list + '\nUse jisho(j) <word> <number on list> to get that definition';
+    emb.description = list + '\nUse jisho(j) <word> <number on list> to get that entry';
     if(!dmBool && dataLen > 10)
     {
       emb.footer = {text: 'You have been DMed due to the amount of results'};
@@ -193,10 +193,10 @@ module.exports = function feather(requires)
       }
       else if(num >= api.data.length)
       {
-        let v = 'There aren\'t enough entries in the dictionary to grab number ' + (num+1)+'.'
+        let v = 'There aren\'t enough entries in the dictionary to grab number ' + (num+1)+'.';
         if(api.data.length == 1)
         {
-          v += 'There is only one entry'
+          v += 'There is only one entry';
         }
         else
         {
