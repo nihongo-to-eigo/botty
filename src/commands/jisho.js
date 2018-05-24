@@ -8,7 +8,7 @@ module.exports = function command(requires)
     name: 'Jisho',
     inline: false,
     alias: ['j'],
-    description: '[<word/sentence>, <word/sentence> --list, <word/sentence> <number from --list>] Looks up a word from Jisho.org, you may use jisho <word> --list to get a list of definitions. Then use jisho <word> <number> and that will display the definition',
+    description: '[<word/sentence>, <word/sentence> --list, <word/sentence> <number from --list>] Looks up a word from Jisho.org, you may use jisho <word> --list to get a list of dictionary entries. Then use jisho <word> <number> and that will display that entry',
     permission: 'public',
     action: function(details)
     {
@@ -64,7 +64,7 @@ module.exports = function command(requires)
             }
           });
         });
-      }
+      };
       //processes the command
       //to better understand this part, take a look at the parameters at the top of the page
       if(details.input === '') {return;}
