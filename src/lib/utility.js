@@ -52,23 +52,14 @@ module.exports = function utility(requires)
     }
     return false;
   };
+
   //Checks to see if a message would be a command (Starts with the prefix)
   utilities.isCommandForm = function(message)
   {
-    return new Promise((resolve, reject) =>
-    {
-      if(message.startsWith(config.prefix))
-      {
-        resolve({isCommand: true, prefix: config.prefix});
-      }
-      else
-      {
-        reject('Not a prefix');
-      }      
-    });
-
+    return message.startsWith(config.prefix);
   };
-    //Removes the prefix from the message
+
+  //Removes the prefix from the message
   utilities.stripPrefix = function(message)
   {
     if(message.startsWith(config.prefix))

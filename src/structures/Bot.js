@@ -156,63 +156,47 @@ class Bot extends EventEmitter
       user: message.author.username,
       userID: message.author.id,
       channelID: message.channel_id,
-      message: message.content
+      message: message.content,
+      isDirectMessage: message.channel_id in bot.directMessages ? true : false,
+      isCommandForm: utility.isCommandForm(message.content),
+      isAdministrator: utility.isAdministrator(message.author.id)
     };
     
-    details.isDirectMessage = details.channelID in bot.directMessages ? true : false;
-    if(details.isDirectMessage)
+    // No need to continue if this isn't a command.
+    if(!details.isCommandForm)
+      return;
+    
+    if(!details.isDirectMessage)
     {
-      details.isCommandForm = utility.isCommandForm(details.message);
+      details.serverID = utility.getServerID(details.channelID);
+    }
+
+    //separate the command from the rest of the string
+    let cmd = utility.stripPrefix(details.message);
+    let keyword = cmd.split(' ')[0];
+    details.input = cmd.replace(keyword, '').trim();
+
+    //split up the remaining into something similar to command line args
+    details.args = cmd.split(' ');
+    keyword = keyword.toLowerCase();
+    
+    //if the command exists, check the permissions.
+    if(commands[keyword] && typeof commands[keyword].getAction() === 'function')
+    {
+      processCommand(keyword, details);
     }
     else
     {
-      details.isCommandForm = utility.isCommandForm(details.message);
+      //didn't find command
+      for(let index in commands)
+      {
+        if(commands[index] && typeof commands[index] === 'object' && commands[index].getAlias().indexOf(keyword) > -1)
+        {
+          processCommand(index, details);
+        }
+      }
     }
     
-    if(details.isCommandForm !== undefined)
-    {
-      details.isCommandForm.then((commInfo) =>
-      {
-        //logging stuff
-        console.log(commInfo);
-        details.prefix = commInfo.prefix;
-        //is the message sender listed as an admin
-        details.isAdministrator = utility.isAdministrator(details.userID);
-        if(!details.isDirectMessage)
-        {
-          details.serverID = utility.getServerID(details.channelID);
-        }
-        //separate the command from the rest of the string
-        let cmd = utility.stripPrefix(details.message);
-        let keyword = cmd.split(' ')[0];
-        details.input = cmd.replace(keyword, '').trim();
-        //split up the remaining into something similar to command line args
-        details.args = cmd.split(' ');
-        keyword = keyword.toLowerCase();
-        //if the command exists, check the permissions.
-        if(commands[keyword] && typeof commands[keyword].getAction() === 'function')
-        {
-          processCommand(keyword, details);
-        }
-        else
-        {
-          //didn't find command
-          for(let index in commands)
-          {
-            if(commands[index] && typeof commands[index] === 'object' && commands[index].getAlias().indexOf(keyword) > -1)
-            {
-              processCommand(index, details);
-            }
-          }
-        }  
-      }).catch((err) =>
-      {
-        if(this.debug)
-        {
-          console.log(err);
-        }
-      });
-    }
     function handleDisabled(details)
     {
       bot.sendMessage({
