@@ -51,6 +51,7 @@ module.exports = function command(requires)
         field.name = `${details.prefix}${command}, ${concatArr(info.commands[command].getAlias())}`;
         field.value = info.commands[command].getDesc();
         field.inline = info.commands[command].inline;
+        emb.fields.push(field);
         //seeeeend it once all of the commands are iterated through
         if(index === commLen - 1)
         {
