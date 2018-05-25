@@ -27,11 +27,11 @@ module.exports = function command(requires)
           {
             if(i == (arr.length - 1))
             {
-              s += details.prefix + arr[i];
+              s += info.config.prefix + arr[i];
             }
             else
             {
-              s += details.prefix + arr[i] + ', ';
+              s += info.config.prefix + arr[i] + ', ';
             }
           }
         }
@@ -48,7 +48,7 @@ module.exports = function command(requires)
           return;
         }
         //create the entry in the embed
-        field.name = `${details.prefix}${command}, ${concatArr(info.commands[command].getAlias())}`;
+        field.name = `${info.config.prefix}${command}, ${concatArr(info.commands[command].getAlias())}`;
         field.value = info.commands[command].getDesc();
         field.inline = info.commands[command].inline;
         emb.fields.push(field);
