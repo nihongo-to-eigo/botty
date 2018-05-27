@@ -18,7 +18,6 @@ module.exports = function command(requires)
       emb.title = 'Help';
       emb.description = "You can DM the bot :heart:";
 
-      let commLen = Object.keys(info.commands).length;
       Object.keys(info.commands).forEach((command,index) =>
       {
         let field = {};
@@ -34,14 +33,12 @@ module.exports = function command(requires)
         field.value = info.commands[command].getDesc();
         field.inline = info.commands[command].inline;
         emb.fields.push(field);
-        //seeeeend it once all of the commands are iterated through
-        if(index === commLen - 1)
-        {
-          bot.sendMessage(details.channelID, {
-            embed: emb
-          });
-        }
       });
+      
+      //seeeeend it once all of the commands are iterated through
+      bot.sendMessage(details.channelID, {
+        embed: emb
+      });     
     }
   }, requires);
 };
