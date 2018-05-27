@@ -6,7 +6,7 @@ module.exports = function command(requires)
 {
   return new Command({
     inline: true,
-    alias: ['?'],
+    alias: ['?', 'h'],
     description: 'Brings up this menu.',
     permission: 'public',
     action: function(details)
