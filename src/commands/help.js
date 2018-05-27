@@ -17,26 +17,6 @@ module.exports = function command(requires)
       emb.fields = [];
       emb.title = 'Help';
       emb.description = "You can DM the bot :heart:";
-      //concatenates an array to one line
-      const concatArr = function(arr)
-      {
-        let s = '';
-        for(let i = 0; i < arr.length; i++)
-        {
-          if(arr[i] != null)
-          {
-            if(i == (arr.length - 1))
-            {
-              s += info.config.prefix + arr[i];
-            }
-            else
-            {
-              s += info.config.prefix + arr[i] + ', ';
-            }
-          }
-        }
-        return s;
-      };
 
       let commLen = Object.keys(info.commands).length;
       Object.keys(info.commands).forEach((command,index) =>
@@ -48,7 +28,9 @@ module.exports = function command(requires)
           return;
         }
         //create the entry in the embed
-        field.name = `${info.config.prefix}${command}, ${concatArr(info.commands[command].getAlias())}`;
+        let prefix = info.config.prefix;
+        let aliases = prefix + info.commands[command].getAlias().join(', ' + prefix);      
+        field.name = `${prefix}${command}, ${aliases}`;
         field.value = info.commands[command].getDesc();
         field.inline = info.commands[command].inline;
         emb.fields.push(field);
