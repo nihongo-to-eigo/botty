@@ -3,6 +3,7 @@ const readline = require('readline');
 
 let rl = readline.createInterface(process.stdin, process.stdout);
 
+// 'key in output object', 'property description', 'default value', 'multiple values OK'
 let mainTemplate = [
   ['prefix', 'Command Prefix', '[', false],
   ['playing', 'Bot Status', 'Try %prefixhelp ;)', false],
