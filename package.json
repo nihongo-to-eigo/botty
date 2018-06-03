@@ -4,8 +4,8 @@
   "description": "- Node.js > v8",
   "main": "start.js",
   "dependencies": {
-    "dicksword.js": "^0.3.5",
-    "punycode": "^2.1.0",
+    "dicksword.js": "^0.4.0",
+    "punycode": "^2.1.1",
     "snekfetch": "^4.0.0",
     "urlencode": "^1.1.0"
   },
