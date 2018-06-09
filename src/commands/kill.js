@@ -5,6 +5,7 @@ const Command = require('../structures/Command');
 module.exports = function command(requires)
 {
   return new Command({
+    name: 'Kill',
     inline: true,
     alias: ['ki'],
     description: 'Kills the bot',
