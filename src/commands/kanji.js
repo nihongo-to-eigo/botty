@@ -5,6 +5,7 @@ const Command = require('../structures/Command');
 module.exports = function command(requires)
 {
   return new Command({
+    name: 'Kanji',
     inline: true,
     alias: ['k'],
     description: '<kanji> , Looks up kanji information.',

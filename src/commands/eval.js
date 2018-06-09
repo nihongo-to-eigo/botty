@@ -5,6 +5,7 @@ const Command = require('../structures/Command');
 module.exports = function command(requires)
 {
   return new Command({
+    name: 'Debug',
     inline: true,
     alias: ['ev'],
     description: 'Evaluates JS code',

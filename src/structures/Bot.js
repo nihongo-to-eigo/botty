@@ -109,6 +109,10 @@ class Bot extends EventEmitter
     bot.on('ready', this.onReady.bind(this));
     bot.on('message', this.onMessage.bind(this));
     bot.on('disconnect', this.onDisconnect.bind(this));
+    if(this.debug)
+    {
+      bot.on('debug', this.onDebug.bind(this));
+    }
     this.on('new_server', () =>
     {
       console.log('Joined new server');
@@ -227,18 +231,20 @@ class Bot extends EventEmitter
   onDisconnect(errMsg, code)
   {
     let manualKill = this.manualKill;
-    let bot = this.client;
     console.log(`ERROR ${code}: ${errMsg}`);
-    if(!manualKill)
-    {
-      //reconnect
-      bot.connect();
-    }
-    else
+    if(manualKill)
     {
       console.log('Kill command used.');
       process.exit(0);
     }
+  }
+  /**
+   * Handles debug events for the lib/bot itself.
+   * @param {String} debugStatement 
+   */
+  onDebug(debugStatement)
+  {
+    console.log(debugStatement);
   }
   /**
    * Sets the manualKill variable to true and disconnects the bot

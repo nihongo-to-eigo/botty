@@ -5,6 +5,7 @@ const Command = require('../structures/Command');
 module.exports = function command(requires)
 {
   return new Command({
+    name: 'Help',
     inline: true,
     alias: ['?', 'h'],
     description: 'Brings up this menu.',
