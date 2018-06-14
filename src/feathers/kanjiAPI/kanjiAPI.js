@@ -26,12 +26,13 @@ module.exports = function feather(requires)
   {
     return new Promise((resolve, reject) =>
     {
-      let url = 'http://api.nihongoresources.com/kanji/find/' + urlencode(kanji);
+      let url = 'https://skurt.me/api/kanji/find/' + urlencode(kanji);
       snekfetch.get(url).set('Content-type', 'application/json')
         .then((response) =>
         {
           if(response.statusCode === 200)
           {
+            console.log(response.body);
             resolve(response.body);
           }
           else
@@ -44,46 +45,52 @@ module.exports = function feather(requires)
   const prettyDisplay = function(body)
   {
     let emb = {};
-    if(body.length > 0)
+    if(body)
     {
-      if(body[0].literal != undefined)
+      if(body._id != undefined)
       {
-        emb.title = body[0].literal;
-        if(body[0].jlpt == undefined && body[0].grade == undefined)
+        emb.title = body._id;
+        if(body.jlpt == undefined && body.grade == undefined)
         {
           emb.description = `\n _ _`;
         }
-        else if(body[0].jlpt == undefined && body[0].grade != undefined)
+        else if(body.jlpt == undefined && body.grade != undefined)
         {
-          emb.description = `Grade ${body[0].grade}`;
+          emb.description = `Grade ${body.grade}`;
         }
-        else if(body[0].jlpt != undefined && body[0].grade == undefined)
+        else if(body.jlpt != undefined && body.grade == undefined)
         {
-          emb.description = `JLPT N${body[0].jlpt}`;
+          emb.description = `JLPT N${body.jlpt}`;
         }
-        else if(body[0].jlpt != undefined && body[0].grade != undefined)
+        else if(body.jlpt != undefined && body.grade != undefined)
         {
-          emb.description = `JLPT N${body[0].jlpt}, Grade ${body[0].grade}`;
+          emb.description = `JLPT N${body.jlpt}, Grade ${body.grade}`;
         }
         
         let fields = [];
-        let strokes = {name: 'Strokes', value: body[0].strokeCount, inline: true};
+        let strokes = {name: 'Strokes', value: body.stroke_count[0], inline: true};
         fields.push(strokes);
-        let radical = {name: 'Radical', value: body[0].radical, inline: true};
+        let radical = {name: 'Radical', value: body.radical.literal, inline: true};
         fields.push(radical);
-        if(body[0].parents.length > 0)
+        
+        if(body.parents)
         {
-          let parents = {name: 'Elements', value: body[0].parents.join('\n'), inline: true};
+          let parents = {name: 'Elements', value: body.parents.join('\n'), inline: true};
           fields.push(parents);
         }
-        if(body[0].children.length > 0)
+        if(body.children)
         {
-          let related = {name: 'Related Kanji', value: body[0].children.join(', '), inline: true};
+          let parents = {name: 'Related Kanji', value: body.children.join(','), inline: true};
+          fields.push(parents);
+        }
+        if(body.nanori)
+        {
+          let related = {name: 'Nanori', value: body.nanori.join(', '), inline: true};
           fields.push(related);
         }
-        let readings = {name: 'Readings', value: body[0].readings.join('\n'), inline: true};
+        let readings = {name: 'Readings', value: `${body.reading.ja_on.join('\n')}\n${body.reading.ja_kun.join('\n')}`, inline: true};
         fields.push(readings);
-        let meanings = {name: 'Meanings', value: body[0].meanings.join('\n'), inline: true};
+        let meanings = {name: 'Meanings', value: body.meanings.join('\n'), inline: true};
         fields.push(meanings);
         emb.fields = fields;
         return emb;
