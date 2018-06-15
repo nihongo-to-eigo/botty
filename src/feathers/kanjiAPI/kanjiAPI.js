@@ -5,7 +5,8 @@ module.exports = function feather(requires)
   //feather obj
   const feather = {};
   //set variable for config
-  const config = feather.config;
+  const config = require(`${process.cwd()}/feathers.json`).kanjiAPI;
+  
   //requires
   const snekfetch = require('snekfetch');
   const urlencode = require('urlencode');
@@ -27,7 +28,7 @@ module.exports = function feather(requires)
     return new Promise((resolve, reject) =>
     {
       let url = 'https://skurt.me/api/kanji/find/' + urlencode(kanji);
-      snekfetch.get(url).set('Content-type', 'application/json')
+      snekfetch.get(url).set('Content-type', 'application/json').set('authorization', config.key)
         .then((response) =>
         {
           if(response.statusCode === 200)
