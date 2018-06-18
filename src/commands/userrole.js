@@ -22,7 +22,7 @@ module.exports = function command(requires)
           console.log(roleNames);
           let emb = {};
           emb.title = 'User selectable roles.'
-          emb.description = roleNames.join('/n');
+          emb.description = roleNames.join('\n');
           bot.sendMessage(details.channelID, {embed: emb});
         })
       }
