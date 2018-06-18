@@ -6,7 +6,7 @@ module.exports = function utility(requires)
   const bot = requires.bot;
   const info = requires.info;
   const config = info.config;
-
+  
   utilities.useSource = function(feather)
   {
     if(info.feathers[feather])
@@ -17,6 +17,21 @@ module.exports = function utility(requires)
     {
       return false;
     }
+  };
+  //Gets a role by name
+  utilities.getRoleByName = function(serverID, name)
+  {
+    return new Promise((resolve, reject) =>
+    {
+      Object.keys(bot.servers[serverID].roles).forEach((roleID) =>
+      {
+        if(bot.servers[serverID].roles[roleID].name === name)
+        {
+          resolve(roleID);
+        }
+      });
+      reject('Role name not found.');
+    });
   };
   //Wraps a string in 3 backticks to make a code block
   utilities.codeBlock = function(str,style)

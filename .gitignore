@@ -2,3 +2,4 @@ node_modules/*
 config.json
 feathers.json
 .vscode/*
+src/lib/databases/*
