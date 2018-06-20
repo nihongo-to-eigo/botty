@@ -9,7 +9,6 @@ const Client = require('dicksword.js');
 const Loader = require('./Loader');
 const CommandLoader = require('./CommandLoader');
 const FeatherLoader = require('./FeatherLoader');
-const fork = require('child_process').fork;
 
 /**
  * @class
