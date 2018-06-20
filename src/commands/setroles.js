@@ -1,14 +1,14 @@
 'use strict';
 const Command = require('../structures/Command');
 
-//command to test role stuff
+//command to enable selectable roles
 module.exports = function command(requires)
 {
   return new Command({
-    name: 'Test Role',
+    name: 'Set Roles',
     inline: true,
-    alias: ['tr'],
-    description: 'Tests role things',
+    alias: ['sr'],
+    description: 'Sets available user roles.',
     permission: 'private',
     action: function(details)
     {
@@ -34,8 +34,11 @@ module.exports = function command(requires)
             if(err.errorType === 'uniqueViolated')
             {
               info.db.removeRoleByID(roleID).then((numRemoved) => {
-                bot.sendMessage(details.channelID, {embed: {title: 'Removed', description: `You have removed the __${details.input}__ role fro the user selectable roles`,
-                color: info.utility.red}});
+                let remEmb = {};
+                remEmb.title = 'Removed';
+                remEmb.description = `You have removed the __${details.input}__ role for the user selectable roles`;
+                remEmb.color = info.utility.red;
+                bot.sendMessage(details.channelID, {embed: remEmb});
                 console.log(numRemoved);
               }).catch((err) => {
                 console.log(err);
