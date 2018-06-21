@@ -19,7 +19,7 @@ module.exports = function command(requires)
       if(details.input === "") {return;}
       else
       {
-        let nameParse = details.input.match(/.+:\s/g);
+        let nameParse = details.input.match(/[\w\s]+:\s/g);
         if(nameParse !== null)
         {
           let tagName = nameParse[0].replace(': ', '');
