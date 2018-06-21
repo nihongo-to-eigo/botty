@@ -21,7 +21,6 @@ module.exports = function command(requires)
       {
         info.utility.getRoleByName(details.serverID, details.input).then((roleID) =>
         {
-          console.log(roleID);
           info.db.addRole(roleID, details.input).then((dbrole) =>
           {
             let emb = {};
@@ -39,7 +38,6 @@ module.exports = function command(requires)
                 remEmb.description = `You have removed the __${details.input}__ role for the user selectable roles`;
                 remEmb.color = info.utility.red;
                 bot.sendMessage(details.channelID, {embed: remEmb});
-                console.log(numRemoved);
               }).catch((err) => {
                 console.log(err);
               })
