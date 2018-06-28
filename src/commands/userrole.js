@@ -19,7 +19,6 @@ module.exports = function command(requires)
       if(details.input === "")
       {
         info.db.listRoles().then((roleNames) => {
-          console.log(roleNames);
           let emb = {};
           emb.title = 'User selectable roles.'
           emb.description = roleNames.join('\n');

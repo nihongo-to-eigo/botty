@@ -83,7 +83,7 @@ module.exports = function utility(requires)
   {
     return new Promise((resolve, reject) =>
     {
-      db.roles.find({},(err, docs) =>
+      db.roles.find({}, (err, docs) =>
       {
         if(err)
         {
@@ -93,5 +93,71 @@ module.exports = function utility(requires)
       });
     });
   }
+  /**
+   * DB setup for tags
+   */
+  db.tags = new Datastore('./src/lib/databases/tags.db');
+  db.tags.loadDatabase();
+  //autocompaction every 10 minutes
+  db.tags.persistence.setAutocompactionInterval(600000);
+  /**
+   * DB functions for roles
+   */
+  db.addTag = function(tagName, content)
+  {
+    return new Promise((resolve, reject) => {
+      db.tags.insert({_id: tagName, content: content}, (err, doc) =>
+      {
+        if(err)
+        {
+          reject(err);
+        }
+        resolve(doc);
+      });
+    });
+  }
+  db.removeTag = function(tagName)
+  {
+    return new Promise((resolve, reject) =>
+    {
+      db.tags.remove({_id: tagName}, {}, (err, numRemoved) =>
+      {
+        if(err)
+        {
+          reject(err);
+        }
+        resolve(numRemoved);
+      });
+    });
+  }
+  db.searchTag = function(tagName)
+  {
+    return new Promise((resolve, reject) =>
+    {
+      db.tags.findOne({_id: tagName}, (err, doc) =>
+      {
+        if(err)
+        {
+          reject(err);
+        }
+        resolve(doc);
+      });
+    });
+  }
+  db.listTags = function()
+  {
+    return new Promise((resolve, reject) =>
+    {
+      db.tags.find({}, (err, docs) =>
+      {
+        if(err)
+        {
+          reject(err);
+        }
+        resolve(docs.map(tagEntry => tagEntry._id));
+      });
+    });
+  }
+
   return db;
 };
