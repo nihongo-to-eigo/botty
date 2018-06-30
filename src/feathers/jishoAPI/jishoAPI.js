@@ -112,76 +112,59 @@ module.exports = function feather(requires)
   //gets the definitions
   const getDefinitions = function(sensesArr)
   {
-    let definitions = '';
+    let definitions = [''];
+    let currentPlace = 0;
     let numDefs = 0;
     let arrLen = sensesArr.length;
+    let definition = '';
     for(var i = 0; i < arrLen; i ++)
     {
       if(sensesArr[i].english_definitions !== undefined)
       {
-        definitions += (numDefs+1) + '. ';
+        definition = (numDefs+1) + '. ';
         numDefs ++;
-        if(concatArr(sensesArr[i].parts_of_speech) == '')
+        if(sensesArr[i].parts_of_speech.length === 0)
         {
-          if(concatArr(sensesArr[i].tags) == '')
+          if(sensesArr[i].tags.length === 0)
           {
-            definitions += concatArr(sensesArr[i].english_definitions) +'\n';
+            definition += sensesArr[i].english_definitions.join(', ') +'\n';
           }
           else
           {
-            definitions+= concatArr(sensesArr[i].english_definitions) + ' - ' + concatArr(sensesArr[i].tags) + '. ' + concatArr(sensesArr[i].info) + '\n';
+            definition += sensesArr[i].english_definitions.join(', ') + ' - ' + sensesArr[i].tags.join(', ') + '. ' + sensesArr[i].info.join(', ') + '\n';
           }
         }
         else
         {
-          definitions += '*' + concatArr(sensesArr[i].parts_of_speech) + '*: ';
-          if(concatArr(sensesArr[i].tags) == '')
+          definition += '*' + sensesArr[i].parts_of_speech.join(', ') + '*: ';
+          if(sensesArr[i].tags.length === 0)
           {
-            definitions += concatArr(sensesArr[i].english_definitions) + '\n';
+            definition += sensesArr[i].english_definitions.join(', ') + '\n';
           }
           else
           {
-            definitions+= concatArr(sensesArr[i].english_definitions) + ' - ' + concatArr(sensesArr[i].tags) + '. '+ concatArr(sensesArr[i].info) + '\n';
+            definition += sensesArr[i].english_definitions.join(', ') + ' - ' + sensesArr[i].tags.join(', ') + '. '+ sensesArr[i].info.join(', ') + '\n';
           }
         }
-      }
-      
-      
-    }
-    return definitions;
-  };
-  //concatenates an array to one line
-  const concatArr = function(arr)
-  {
-    let s = '';
-    if(arr !== undefined)
-    {
-      let arrLen = arr.length;
-      for(let i = 0; i < arrLen; i++)
-      {
-        if(arr[i] != null)
+        if((definitions[currentPlace].length + definition.length) >= 1024)
         {
-          if(i == (arrLen - 1))
-          {
-            s += arr[i];
-          }
-          else
-          {
-            s += arr[i] + ', ';
-          }
+          definitions.push(definition);
+          currentPlace ++;
+        }
+        else
+        {
+          definitions[currentPlace] += definition;
         }
       }
     }
-    
-    return s;
+      return definitions;
   };
   //takes all of the data found and displays it nicely
   const prettyDisplay = function(api, num)
   {
     let readField = {name: 'Reading(s):',inline: true};
     let tagField = {name: 'Tag(s):',inline: true};
-    let defField = {name: 'Definition(s):', inline: false};
-    let embed = {title: '', description: '', color: 0xa7fcd0, footer: { text:'Results from jisho.org'}};
+    let embed = {title: '', description: '', color: 0xa7fcd0, footer: { text:'Results from jisho.org.'}};
     let fields = [];
     try
     {
@@ -193,14 +176,14 @@ module.exports = function feather(requires)
       }
       else if(num >= api.data.length)
       {
-        let v = 'There aren\'t enough entries in the dictionary to grab number ' + (num+1)+'.';
+        let v = 'There aren\'t enough entries in the dictionary to grab number ' + (num+1) + '.';
         if(api.data.length == 1)
         {
           v += 'There is only one entry';
         }
         else
         {
-          v += 'There are only  '+(api.data.length)+' entry.';
+          v += 'There are only  ' + (api.data.length) + ' entry.';
         }
         fields = [{name: 'Error', value:v, inline:true}];
       }
@@ -214,12 +197,26 @@ module.exports = function feather(requires)
           tagField.value = tags;
           fields.push(tagField);
         }
-        defField.value = getDefinitions(api.data[num].senses);
+        getDefinitions(api.data[num].senses).forEach((defList, index) =>
+        {
+          let thisDef = {};
+          if(index === 0 )
+          {
+            thisDef.name = 'Definition(s)';
+          }
+          else
+          {
+            thisDef.name = '\u200B';
+          }
+          thisDef.value = defList;
+          thisDef.inline = false;
+          fields.push(thisDef);
+        });
+
         if(api.data.length > 10)
         {
-          defField.value += 'The lookup has more than 10 items from Jisho. Try jisho(j) <word> --list for the list.';
+          embed.footer.text += ' The lookup has more than 10 items from Jisho. Try jisho(j) <word> --list for the list.';
         }
-        fields.push(defField);
         
       }
     }

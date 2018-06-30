@@ -112,10 +112,6 @@ class Bot extends EventEmitter
     {
       bot.on('debug', this.onDebug.bind(this));
     }
-    this.on('new_server', () =>
-    {
-      console.log('Joined new server');
-    });
     bot.on('guildDelete', (server) =>
     {
       console.log(`Left ${server}`);
@@ -131,6 +127,7 @@ class Bot extends EventEmitter
     let utility = this.requires.utility;
     let config = this.config;
     console.log(`${bot.username} - (${bot.id})`);
+
     bot.setPresence({
       idle_since: null,
       game: {
