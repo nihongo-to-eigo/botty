@@ -20,7 +20,6 @@ module.exports = function command(requires)
       {
         kanji.searchKanji(k).then((file) =>
         {
-          console.log(file);
           bot.uploadFile(details.channelID, file, {
             fileName: 'strokes.gif',
           }); 
