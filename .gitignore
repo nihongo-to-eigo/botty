@@ -3,3 +3,9 @@ config.json
 feathers.json
 .vscode/*
 src/lib/databases/*
+src/build/*
+src/embed/*
+tsconfig.json
+testLib.js
+exampleJisho.json
+longJisho.json
