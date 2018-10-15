@@ -19,7 +19,7 @@ module.exports = function command(requires)
       let nickname = member.nick || '';
       if(details.input === '') {
         if(!nickname.endsWith(pencil)) {
-          let newName = member.nick ? member.nick + pencil : member.username + pencil;
+          let newName = member.nick ? member.nick + ' ' + pencil : member.username + ' ' + pencil;
           member.setNick(newName).then(() => {
             bot.sendMessage(details.channelID, {embed: {
               title: 'Success', description: pencil + ' Has been added.', color: info.utility.green}
