@@ -16,31 +16,25 @@ module.exports = function command(requires)
       let info = requires.info;
       let member = bot.servers[details.serverID].members[details.userID];
       let pencil = '📝';
-      let newName = '';
-      let change = true;
-      if(member.nick) {
-        if(!member.nick.endsWith(pencil)) {
-          newname = member.nick ? member.nick + pencil : member.username + pencil;
+      let nickname = member.nick || '';
+      if(details.input === '') {
+        if(!nickname.endsWith(pencil)) {
+          let newName = member.nick ? member.nick + pencil : member.username + pencil;
+          member.setNick(newName).then(() => {
+            bot.sendMessage(details.channelID, {embed: {
+              title: 'Success', description: pencil + ' Has been added.', color: info.utility.green}
+            });
+          }).catch(() => {
+            bot.sendMessage(details.channelID, {embed: {
+              title: 'Error', description: 'An error occured.', color: info.utility.red}
+            });
+          });
         }
         else {
-          change = false;
+          bot.sendMessage(details.channelID, {embed: {
+            title: 'Error', description: 'You already have ' + pencil, color: info.utility.red}
+          });
         }
-      }
-      if(details.input === '' && change) {
-        member.setNick(newName).then(() => {
-          bot.sendMessage(details.channelID, {embed: {
-            title: 'Success', description: pencil + ' Has been added.', color: info.utility.green}
-          });
-        }).catch(() => {
-          bot.sendMessage(details.channelID, {embed: {
-            title: 'Error', description: 'An error occured.', color: info.utility.red}
-          });
-        })
-      }
-      else if(change === false) {
-        bot.sendMessage(details.channelID, {embed: {
-          title: 'Error', description: 'You already have ' + pencil, color: info.utility.red}
-        });
       }
     }
   }, requires);
