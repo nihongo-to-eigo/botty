@@ -23,7 +23,7 @@ module.exports = function command(requires)
           let emb = {};
           emb.title = 'Tags.'
           emb.description = tagNames.join('\n');
-          bot.sendMessage(details.channelID, {embed: emb});
+          bot.createMessage(details.channelID, {embed: emb});
         });
       }
       else
@@ -36,11 +36,11 @@ module.exports = function command(requires)
             errEmb.title = 'Error';
             errEmb.description = `No __${details.input}__ tag found.`;
             errEmb.color = info.utility.red;
-            bot.sendMessage(details.channelID, {embed: errEmb});
+            bot.createMessage(details.channelID, {embed: errEmb});
           }
           else
           {
-            bot.sendMessage(details.channelID, tag.content);
+            bot.createMessage(details.channelID, tag.content);
           }
         });
       }

@@ -37,7 +37,7 @@ module.exports = function command(requires)
       });
       
       //seeeeend it once all of the commands are iterated through
-      bot.sendMessage(details.channelID, {
+      bot.createMessage(details.channelID, {
         embed: emb
       });     
     }

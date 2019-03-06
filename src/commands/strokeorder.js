@@ -20,12 +20,15 @@ module.exports = function command(requires)
       {
         kanji.searchKanji(k).then((file) =>
         {
-          bot.uploadFile(details.channelID, file, {
-            fileName: 'strokes.gif',
+          bot.createMessage(details.channelID, {
+            embed: {title: k, description: 'Stroke Order Gif', image: {url: 'attachment://stroke.gif'}},
+          },{
+            file,
+            name: 'stroke.gif'
           }); 
         }).catch((err) =>
         {
-          bot.sendMessage(details.channelID, {
+          bot.createMessage(details.channelID, {
             embed: {
               title: 'Error',
               description: 'Kanji not found.',

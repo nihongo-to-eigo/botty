@@ -20,15 +20,15 @@ module.exports = function command(requires)
       {
         kanji.searchKanji(k).then((emb) =>
         {
-          bot.sendMessage(details.channelID, {
+          bot.createMessage(details.channelID, {
             embed: emb,
           }); 
         }).catch((err) =>
         {
-          bot.sendMessage(details.channelID, {
+          bot.createMessage(details.channelID, {
             embed: {
               title: 'Error',
-              description: err
+              description: JSON.stringify(err)
             }
           });
         });

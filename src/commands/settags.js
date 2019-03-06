@@ -30,14 +30,14 @@ module.exports = function command(requires)
             emb.title = 'Success';
             emb.description = `You have added the __${tagName}__ tag.`;
             emb.color = info.utility.green;
-            bot.sendMessage(details.channelID, {embed: emb});
+            bot.createMessage(details.channelID, {embed: emb});
           }).catch((err) =>
           {
             let errEmb = {};
             errEmb.title = 'Failed';
             errEmb.description = `You have failed to add the __${tagName}__ tag.`;
             errEmb.color = info.utility.red;
-            bot.sendMessage(details.channelID, {embed: emb});
+            bot.createMessage(details.channelID, {embed: emb});
             console.log(err.errorType);
           });
         }
@@ -51,7 +51,7 @@ module.exports = function command(requires)
               remEmb.title = 'Removed';
               remEmb.description = `You have removed the __${details.input}__ tag.`;
               remEmb.color = info.utility.red;
-              bot.sendMessage(details.channelID, {embed: remEmb});
+              bot.createMessage(details.channelID, {embed: remEmb});
             }
             else if(numRemoved === 0)
             {
@@ -59,7 +59,7 @@ module.exports = function command(requires)
               remErrEmb.title = 'Error';
               remErrEmb.description = `There was no __${details.input}__ tag to remove`;
               remErrEmb.color = info.utility.red;
-              bot.sendMessage(details.channelID, {embed: remErrEmb});
+              bot.createMessage(details.channelID, {embed: remErrEmb});
             }
           }).catch((err) =>
           {

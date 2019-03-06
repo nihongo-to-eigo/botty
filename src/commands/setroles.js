@@ -27,7 +27,7 @@ module.exports = function command(requires)
             emb.title = 'Success';
             emb.description = `You have added the __${details.input}__ role to the user selectable roles.`;
             emb.color = info.utility.green;
-            bot.sendMessage(details.channelID, {embed: emb});
+            bot.createMessage(details.channelID, {embed: emb});
           }).catch((err) =>
           {
             if(err.errorType === 'uniqueViolated')
@@ -37,7 +37,7 @@ module.exports = function command(requires)
                 remEmb.title = 'Removed';
                 remEmb.description = `You have removed the __${details.input}__ role for the user selectable roles`;
                 remEmb.color = info.utility.red;
-                bot.sendMessage(details.channelID, {embed: remEmb});
+                bot.createMessage(details.channelID, {embed: remEmb});
               }).catch((err) => {
                 console.log(err);
               })
