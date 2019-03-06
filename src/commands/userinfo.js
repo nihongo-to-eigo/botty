@@ -18,9 +18,9 @@ module.exports = function command(requires)
       const getInfo = function(uid)
       {
         let emb = {};
-        emb.title = bot.users[uid].username + "'s Info";
+        emb.title = bot.users.get(uid).username + "'s Info";
         emb.description = '\n _ _';
-        let server = bot.servers[details.serverID];
+        let server = bot.guilds.get(details.serverID);
         let extras = false;
         if(server != undefined)
         {
@@ -33,10 +33,10 @@ module.exports = function command(requires)
 
         if(extras)
         {
-          emb.color = bot.servers[details.serverID].members[uid].color;
-          if(bot.servers[details.serverID].members[uid].nick)
+          emb.color = bot.guilds.get(details.serverID).members.get(uid).color;
+          if(bot.guilds.get(details.serverID).members.get(uid).nick)
           {
-            let nickname = {name: "Nickname:", value: bot.servers[details.serverID].members[uid].nick};
+            let nickname = {name: "Nickname:", value: bot.guilds.get(details.serverID).members.get(uid).nick};
             fields.push(nickname);
           }          
           let joined = {name: "Joined", value: getJoinedTime(uid)};
@@ -45,9 +45,9 @@ module.exports = function command(requires)
 
         let created = {name: "Created:", value: getCreatedTime(uid)};
         fields.push(created);
-        if(bot.users[uid].game != null)
+        if(bot.users.get(uid).game != null)
         {
-          let playing = {name: 'Playing:', value: bot.users[uid].game.name};
+          let playing = {name: 'Playing:', value: bot.users.get(uid).game.name};
           fields.push(playing);
         }
 
@@ -62,7 +62,7 @@ module.exports = function command(requires)
       };
       const getJoinedTime = function(uid)
       {
-        let d = new Date(bot.servers[details.serverID].members[details.userID].joined_at);
+        let d = new Date(bot.guilds.get(details.serverID).members.get(details.userID).joinedAt);
         let localOffset = 5 * 60000;
         let utc = d.getTime() + localOffset;
         let dUTC = new Date(utc);
@@ -71,19 +71,19 @@ module.exports = function command(requires)
       const getAvatar = function(uid)
       {
         let ava = undefined;
-        if(bot.users[uid].avatar.startsWith('a_'))
+        if(bot.users.get(uid).avatar.startsWith('a_'))
         {
-          ava = 'https://cdn.discordapp.com/avatars/' +uid+'/'+bot.users[uid].avatar+'.gif';
+          ava = 'https://cdn.discordapp.com/avatars/' +uid+'/'+bot.users.get(uid).avatar+'.gif';
         }
         else
         {
-          ava = 'https://cdn.discordapp.com/avatars/' +uid+'/'+bot.users[uid].avatar+'.webp';
+          ava = 'https://cdn.discordapp.com/avatars/' +uid+'/'+bot.users.get(uid).avatar+'.webp';
         }
         return ava;
       };
       if(details.input === '')
       {
-        bot.sendMessage(details.channelID, {
+        bot.createMessage(details.channelID, {
           embed: getInfo(details.userID)
         });
       }
@@ -95,13 +95,13 @@ module.exports = function command(requires)
           let link = getAvatar(uid);
           if(link.includes('null.jpg'))
           {
-            bot.sendMessage(details.channelID, {
+            bot.createMessage(details.channelID, {
               message: 'The user has a default avatar.'
             });
           }
           else
           {
-            bot.sendMessage(details.channelID, {
+            bot.createMessage(details.channelID, {
               embed: getInfo(uid)
             });
           }
@@ -109,7 +109,7 @@ module.exports = function command(requires)
       }
       else
       {
-        bot.sendMessage(details.channelID, {
+        bot.createMessage(details.channelID, {
           message: 'Please look at the help menu to see how to properly use the command.'
         });
       }

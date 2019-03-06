@@ -5,7 +5,7 @@
 'use strict';
 
 const EventEmitter = require('events').EventEmitter;
-const Client = require('dicksword.js');
+const Client = require('eris');
 const Loader = require('./Loader');
 const CommandLoader = require('./CommandLoader');
 const FeatherLoader = require('./FeatherLoader');
@@ -34,12 +34,10 @@ class Bot extends EventEmitter
     this.debug = settings.debug || false;
     this.shard = settings.shard || false;
     this.forked = settings.forked || false;
-    this.client = new Client({
-      token: this.config.api.discord_token,
-      autorun: true,
-      cacheOfflineUsers: true
+    this.client = new Client(this.config.api.discord_token, {
+      getAllUsers: true
     });
-    
+
     //other members
     this.startTime = new Date();
     this.manualKill = false;
@@ -75,7 +73,7 @@ class Bot extends EventEmitter
       info: this.requires,
       bObj: this
     });
-    Promise.all([commandPromise,modulePromise, featherPromise]).then((values) =>
+    Promise.all([commandPromise,modulePromise, featherPromise, this.client.connect()]).then((values) =>
     {
       this.requires.commands = values[0].commands;
       this.requires.privates = values[0].privates;
@@ -83,9 +81,9 @@ class Bot extends EventEmitter
       this.requires = Object.assign(this.requires, values[1]);
       this.requires.feathers = values[2];
       this.emit('ready');
-      //console.log(this);
     }).catch((err) =>
     {
+      console.log(err);
       if(this.debug)
       {
         console.log(err);
@@ -106,8 +104,9 @@ class Bot extends EventEmitter
     let bot = this.client;
     //let's not let the functions go crazy and bind themselves to this.client
     bot.on('ready', this.onReady.bind(this));
-    bot.on('message', this.onMessage.bind(this));
+    bot.on('messageCreate', this.onMessage.bind(this));
     bot.on('disconnect', this.onDisconnect.bind(this));
+    bot.on('error', (err) => console.log(err));
     if(this.debug)
     {
       bot.on('debug', this.onDebug.bind(this));
@@ -126,10 +125,8 @@ class Bot extends EventEmitter
     let bot = this.client;
     let utility = this.requires.utility;
     let config = this.config;
-    console.log(`${bot.username} - (${bot.id})`);
-
-    bot.setPresence({
-      idle_since: null,
+    console.log(`${bot.user.username}: ${bot.user.id}`);
+    bot.editStatus('online',{
       game: {
         name : utility.filter(config.playing),
         type: 0
@@ -155,9 +152,9 @@ class Bot extends EventEmitter
     let details = {
       user: message.author.username,
       userID: message.author.id,
-      channelID: message.channel_id,
+      channelID: message.channel.id,
       message: message.content,
-      isDirectMessage: message.channel_id in bot.directMessages ? true : false,
+      isDirectMessage: message.channel_id in bot.privateChannels ? true : false,
       isCommandForm: utility.isCommandForm(message.content),
       isAdministrator: utility.isAdministrator(message.author.id)
     };
@@ -168,7 +165,7 @@ class Bot extends EventEmitter
     
     if(!details.isDirectMessage)
     {
-      details.serverID = utility.getServerID(details.channelID);
+      details.serverID = message.channel.guild.id;
     }
 
     //separate the command from the rest of the string

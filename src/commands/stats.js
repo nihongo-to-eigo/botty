@@ -46,15 +46,6 @@ module.exports = function command(requires)
         }
         return str;
       };
-      const countUsers = function()
-      {
-        let num = 0;
-        Object.keys(bot.servers).forEach(function(key)
-        {
-          num += bot.servers[key].member_count;
-        });
-        return num;
-      };
       const getFeathers = function()
       {
         let s = Object.keys(info.feathers).map((key) => 
@@ -63,30 +54,30 @@ module.exports = function command(requires)
         }).join(', ');
         return s;
       };
-      bot.sendMessage(details.channelID, {
+      bot.createMessage(details.channelID, {
         embed: {
-          title: `${bot.username}'s Stats`,
+          title: `${bot.user.username}'s Stats`,
           description: '',
           footer: {
             text: 'Created by CyberRonin#5517'
           },
           thumbnail: {
-            url: `https://cdn.discordapp.com/avatars/${bot.id}/${bot.avatar}.webp`
+            url: `https://cdn.discordapp.com/avatars/${bot.user.id}/${bot.user.avatar}.webp`
           },
           fields:[
             {
               name: 'Servers',
-              value: Object.keys(bot.servers).length,
+              value: bot.guilds.size,
               inline: true
             },
             {
               name: 'Channels',
-              value: Object.keys(bot.channels).length,
+              value: Object.keys(bot.channelGuildMap).length,
               inline: true
             },
             {
               name: 'Users',
-              value: countUsers(),
+              value: bot.users.size,
               inline: true
             },
             {

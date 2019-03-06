@@ -27,7 +27,6 @@ module.exports = function feather(requires)
         {
           if(response.statusCode === 200)
           {
-            console.log(response.body);
             resolve(response.body);
           }
           else

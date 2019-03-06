@@ -14,24 +14,24 @@ module.exports = function command(requires)
     {
       let bot = requires.bot;
       let info = requires.info;
-      let member = bot.servers[details.serverID].members[details.userID];
+      let member = bot.guilds.get(details.serverID).members.get(details.userID);
       let pencil = '📝';
       let nickname = member.nick || '';
       if(details.input === '') {
         if(!nickname.endsWith(pencil)) {
           let newName = member.nick ? member.nick + ' ' + pencil : member.username + ' ' + pencil;
-          member.setNick(newName).then(() => {
-            bot.sendMessage(details.channelID, {embed: {
+          member.edit({nick: newName}).then(() => {
+            bot.createMessage(details.channelID, {embed: {
               title: 'Success', description: pencil + ' Has been added.', color: info.utility.green}
             });
           }).catch(() => {
-            bot.sendMessage(details.channelID, {embed: {
+            bot.createMessage(details.channelID, {embed: {
               title: 'Error', description: 'An error occured.', color: info.utility.red}
             });
           });
         }
         else {
-          bot.sendMessage(details.channelID, {embed: {
+          bot.createMessage(details.channelID, {embed: {
             title: 'Error', description: 'You already have ' + pencil, color: info.utility.red}
           });
         }

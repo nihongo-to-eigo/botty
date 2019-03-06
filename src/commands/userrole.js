@@ -22,7 +22,7 @@ module.exports = function command(requires)
           let emb = {};
           emb.title = 'User selectable roles.'
           emb.description = roleNames.join('\n');
-          bot.sendMessage(details.channelID, {embed: emb});
+          bot.createMessage(details.channelID, {embed: emb});
         })
       }
       else
@@ -35,50 +35,51 @@ module.exports = function command(requires)
           {
             if(roleEntry === null)
             {
-              bot.sendMessage(details.channelID, {embed: {title: 'Error', description: 'Role is not self assignable.',
+              bot.createMessage(details.channelID, {embed: {title: 'Error', description: 'Role is not self assignable.',
               color: info.utility.red}});
             }
             else
             {
               //if they don't already have the role, give it to them.
-              let roleSearch = bot.servers[details.serverID].members[details.userID].roles.find(memberRole => memberRole === roleID)
+              let memberRoles = bot.guilds.get(details.serverID).members.get(details.userID).roles
+              let roleSearch = memberRoles.find(memberRole => memberRole === roleID)
               if(roleSearch === undefined)
               {
-                bot.servers[details.serverID].members[details.userID].addToRole(roleID).then((result) =>
+                bot.servers.get(details.serverID).members.get(details.userID).addRole(roleID).then((result) =>
                 {
                   let emb = {};
                   emb.title = 'Success';
                   emb.description = `The __${details.input}__ role has been added.`;
                   emb.color = info.utility.green;
-                  bot.sendMessage(details.channelID, {embed: emb});
+                  bot.createMessage(details.channelID, {embed: emb});
                 }).catch((err) =>
                 {
-                  bot.sendMessage(details.channelID, {embed: {title: 'Error', description: 'Error adding role.',
+                  bot.createMessage(details.channelID, {embed: {title: 'Error', description: 'Error adding role.',
                   color: info.utility.red}});
                 });
               }
               //if they already have the role, remove it.
               else
               {
-                bot.servers[details.serverID].members[details.userID].removeFromRole(roleID).then((result) => 
+                bot.guilds.get(details.serverID).members.get(details.userID).removeRole(roleID).then((result) => 
                 {
-                  bot.sendMessage(details.channelID, {embed: {title: 'Removed', description: `The __${details.input}__ role has been removed.`,
+                  bot.createMessage(details.channelID, {embed: {title: 'Removed', description: `The __${details.input}__ role has been removed.`,
                   color: info.utility.red}});
                 }).catch((err) => {
-                  bot.sendMessage(details.channelID, {embed: {title: 'Error', description: 'Error removing role.',
+                  bot.createMessage(details.channelID, {embed: {title: 'Error', description: 'Error removing role.',
                   color: info.utility.red}});
                 });
               }
             }
 
           }).catch((err) => {
-            bot.sendMessage(details.channelID, {embed: {title: 'Error', description: 'Role is not self assignable.',
+            bot.createMessage(details.channelID, {embed: {title: 'Error', description: 'Role is not self assignable.',
               color: info.utility.red}});
           });
           
         }).catch((err) =>
         {
-          bot.sendMessage(details.channelID, {embed: {title: 'Error', description: 'Role does not exist.',
+          bot.createMessage(details.channelID, {embed: {title: 'Error', description: 'Role does not exist.',
               color: info.utility.red}});
         });
       }

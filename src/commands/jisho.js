@@ -20,12 +20,12 @@ module.exports = function command(requires)
       {
         jisho.searchJisho(w,n).then((emb) =>
         {
-          bot.sendMessage(details.channelID, {
+          bot.createMessage(details.channelID, {
             embed: emb,
           }); 
         }).catch((err) =>
         {
-          bot.sendMessage(details.channelID, {
+          bot.createMessage(details.channelID, {
             embed: {
               title: 'Error',
               description: err
@@ -39,25 +39,25 @@ module.exports = function command(requires)
         {
           if(data.shouldDM)
           {
-            bot.sendMessage(details.channelID, {
+            bot.createMessage(details.channelID, {
               embed: {
                 title: 'Too Many Results',
                 description: 'There were more than 10 results, sent results via DM.'
               }
             });
-            bot.sendMessage(details.userID, {
+            bot.createMessage(details.userID, {
               embed: data.embed
             });
           }
           else
           {
-            bot.sendMessage(details.channelID, {
+            bot.createMessage(details.channelID, {
               embed: data.embed
             });
           }
         }).catch((err) =>
         {
-          bot.sendMessage(details.channelID, {
+          bot.createMessage(details.channelID, {
             embed: {
               title: 'Error',
               description: err
