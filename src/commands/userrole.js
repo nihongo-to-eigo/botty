@@ -45,7 +45,7 @@ module.exports = function command(requires)
               let roleSearch = memberRoles.find(memberRole => memberRole === roleID)
               if(roleSearch === undefined)
               {
-                bot.servers.get(details.serverID).members.get(details.userID).addRole(roleID).then((result) =>
+                bot.guilds.get(details.serverID).members.get(details.userID).addRole(roleID).then((result) =>
                 {
                   let emb = {};
                   emb.title = 'Success';
