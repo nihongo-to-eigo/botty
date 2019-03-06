@@ -25,7 +25,7 @@ module.exports = function utility(requires)
     {
       bot.guilds.get(serverID).roles.forEach((role) =>
       {
-        if(bot.guilds.get(serverID).roles.get(role.id).name === name)
+        if(bot.guilds.get(serverID).roles.get(role.id).name.toLowerCase() === name.toLowerCase())
         {
           resolve(role.id);
         }
