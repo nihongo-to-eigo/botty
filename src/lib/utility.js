@@ -23,11 +23,11 @@ module.exports = function utility(requires)
   {
     return new Promise((resolve, reject) =>
     {
-      Object.keys(bot.servers[serverID].roles).forEach((roleID) =>
+      bot.guilds.get(serverID).roles.forEach((role) =>
       {
-        if(bot.servers[serverID].roles[roleID].name === name)
+        if(bot.guilds.get(serverID).roles.get(role.id).name === name)
         {
-          resolve(roleID);
+          resolve(role.id);
         }
       });
       reject('Role name not found.');
@@ -125,7 +125,7 @@ module.exports = function utility(requires)
   utilities.getRole = function (uid, sid)
   {
     let roles = [];
-    roles = bot.servers[sid].members[uid].roles;
+    roles = bot.servers.get(sid).members.get(uid).roles;
     return roles;
   };
   //gets serverID
