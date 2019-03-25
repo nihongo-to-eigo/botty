@@ -92,7 +92,7 @@ module.exports = function command(requires)
             },
             {
               name: 'Discord Server',
-              value: 'https://discord.gg/jDpR9PD',
+              value: info.config.discord_link,
               inline: true
             },
             {

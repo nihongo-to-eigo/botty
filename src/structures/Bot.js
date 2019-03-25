@@ -156,7 +156,7 @@ class Bot extends EventEmitter
       userID: message.author.id,
       channelID: message.channel.id,
       message: message.content,
-      isDirectMessage: message.channel_id in bot.privateChannels ? true : false,
+      isDirectMessage: bot.privateChannels.get(message.channel.id) !== undefined ? true : false,
       isCommandForm: utility.isCommandForm(message.content),
       isAdministrator: utility.isAdministrator(message.author.id)
     };
