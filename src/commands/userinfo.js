@@ -62,7 +62,7 @@ module.exports = function command(requires)
       };
       const getJoinedTime = function(uid)
       {
-        let d = new Date(bot.guilds.get(details.serverID).members.get(details.userID).joinedAt);
+        let d = new Date(bot.guilds.get(details.serverID).members.get(uid).joinedAt);
         let localOffset = 5 * 60000;
         let utc = d.getTime() + localOffset;
         let dUTC = new Date(utc);
