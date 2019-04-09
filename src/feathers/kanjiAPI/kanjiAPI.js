@@ -116,8 +116,10 @@ module.exports = function feather(requires)
         }
         let readings = {name: 'Readings', value: `${body.reading.ja_on.join('\n')}\n${body.reading.ja_kun.join('\n')}`, inline: true};
         fields.push(readings);
-        let meanings = {name: 'Meanings', value: body.meanings.join('\n'), inline: true};
-        fields.push(meanings);
+        if(body.meanings) {
+          let meanings = {name: 'Meanings', value: body.meanings.join('\n'), inline: true};
+          fields.push(meanings);
+        }
         emb.fields = fields;
         return emb;
       }
