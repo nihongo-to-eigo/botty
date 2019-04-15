@@ -211,9 +211,12 @@ class Bot extends EventEmitter
       } else if(permLevel === 'private' && details.isAdministrator) {
         commands[command].act(details);
       } else if(permLevel === 'high' || permLevel === 'low') {
-        if(details.member) {
+        if(!details.member) {
           db.findPerm(details.userID, []).then(docs => {
             if(docs === null) {
+              if(details.isAdministrator) {
+                commands[command].act(details);
+              }
               return;
             } else {
               details.permissionLevel = docs._id;
@@ -227,6 +230,9 @@ class Bot extends EventEmitter
         } else {
           db.findPerm(details.userID, details.member.roles).then(docs => {
             if(docs === null) {
+              if(details.isAdministrator) {
+                commands[command].act(details);
+              }
               return;
             } else {
               details.permissionLevel = docs._id;
