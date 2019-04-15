@@ -150,6 +150,7 @@ class Bot extends EventEmitter
     let details = {
       user: message.author.username,
       userID: message.author.id,
+      author: message.author,
       channelID: message.channel.id,
       message: message.content,
       isDirectMessage: bot.privateChannels.get(message.channel.id) !== undefined ? true : false,
@@ -161,9 +162,9 @@ class Bot extends EventEmitter
     if(!details.isCommandForm)
       return;
     
-    if(!details.isDirectMessage)
-    {
+    if(!details.isDirectMessage) {
       details.serverID = message.channel.guild.id;
+      details.member = message.member;
     }
 
     //separate the command from the rest of the string
@@ -178,7 +179,7 @@ class Bot extends EventEmitter
     //if the command exists, check the permissions.
     if(commands[keyword] && typeof commands[keyword].getAction() === 'function')
     {
-      processCommand(keyword, details);
+      processCommand(keyword, details, db);
     }
     else
     {
@@ -187,7 +188,7 @@ class Bot extends EventEmitter
       {
         if(commands[index] && typeof commands[index] === 'object' && commands[index].getAlias().indexOf(keyword) > -1)
         {
-          processCommand(index, details);
+          processCommand(index, details, db);
         }
       }
     }
@@ -202,15 +203,49 @@ class Bot extends EventEmitter
         }
       });
     }
-    function processCommand(command, details)
+    function processCommand(command, details, db)
     {
-      if(commands[command].getPerm() === 'public')
-      {
+      const permLevel = commands[command].getPerm();
+      if(permLevel === 'public') {
         commands[command].act(details);
-      }
-      else if(commands[command].getPerm() === 'private' && details.isAdministrator)
-      {
+      } else if(permLevel === 'private' && details.isAdministrator) {
         commands[command].act(details);
+      } else if(permLevel === 'high' || permLevel === 'low') {
+        if(!details.member) {
+          db.findPerm(details.userID, []).then(docs => {
+            if(docs === null) {
+              if(details.isAdministrator) {
+                commands[command].act(details);
+              }
+              return;
+            } else {
+              details.permissionLevel = docs._id;
+              if(permLevel === 'low' && (docs._id === 'low' || docs._id === 'high' || details.isAdministrator)) {
+                commands[command].act(details);
+              } else if (permLevel === 'high' && (docs._id === 'high' || details.isAdministrator)) {
+                commands[command].act(details);
+              }
+            }
+          }).catch(console.log)
+        } else {
+          db.findPerm(details.userID, details.member.roles).then(docs => {
+            if(docs === null) {
+              if(details.isAdministrator) {
+                commands[command].act(details);
+              }
+              return;
+            } else {
+              details.permissionLevel = docs._id;
+              if(permLevel === 'low' && (docs._id === 'low' || docs._id === 'high' || details.isAdministrator)) {
+                commands[command].act(details);
+              } else if (permLevel === 'high' && (docs._id === 'high' || details.isAdministrator)) {
+                commands[command].act(details);
+              }
+            }
+
+          }).catch(console.log)
+        }
+        
       }
     }
   }

@@ -45,8 +45,10 @@ module.exports = function command(requires)
                 description: 'There were more than 10 results, sent results via DM.'
               }
             });
-            bot.createMessage(details.userID, {
-              embed: data.embed
+            bot.getDMChannel(details.userID).then(privChannel => {
+              privChannel.createMessage({
+                embed: data.embed
+              });
             });
           }
           else

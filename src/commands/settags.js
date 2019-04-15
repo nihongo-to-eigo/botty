@@ -9,7 +9,7 @@ module.exports = function command(requires)
     inline: true,
     alias: ['st'],
     description: 'Sets available tags.',
-    permission: 'custom',
+    permission: 'low',
     action: function(details)
     {
       const bot = requires.bot;

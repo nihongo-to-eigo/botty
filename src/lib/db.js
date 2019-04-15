@@ -1,7 +1,6 @@
 //setting up the database(s)
 'use strict';
-module.exports = function utility(requires)
-{
+module.exports = function utility(requires) {
   const bot = requires.bot;
   const info = requires.info;
   const config = info.config;
@@ -18,19 +17,14 @@ module.exports = function utility(requires)
   /**
    * DB functions for roles
    */
-  bot.on('guildRoleDelete', (roleData) =>
-  {
+  bot.on('guildRoleDelete', (roleData) => {
     db.removeRoleByID(roleData.role_id);
   });
   //Removes the role, searches by roleID
-  db.removeRoleByID = function(roleID) 
-  {
-    return new Promise((resolve, reject) =>
-    {
-      db.roles.remove({_id: roleID}, {}, (err, numRemoved) =>
-      {
-        if(err)
-        {
+  db.removeRoleByID = (roleID) => {
+    return new Promise((resolve, reject) => {
+      db.roles.remove({_id: roleID}, {}, (err, numRemoved) => {
+        if(err) {
           reject(err);
         }
         resolve(numRemoved);
@@ -38,60 +32,126 @@ module.exports = function utility(requires)
     });
   };
   //Removes the role, searches by name in DB. Name referring to the autoRole name, not role name.
-  db.removeRoleByName = function(name)
-  {
-    return new Promise((resolve, reject) =>
-    {
-      db.roles.remove({name: name}, {}, (err, numRemoved) =>
-      {
-        if(err)
-        {
+  db.removeRoleByName = (name) => {
+    return new Promise((resolve, reject) => {
+      db.roles.remove({name: name}, {}, (err, numRemoved) => {
+        if(err) {
           reject(err);
         }
         resolve(numRemoved);
       }); 
     });
   };
-  db.addRole = function(roleID, nameTag)
-  {
-    return new Promise((resolve, reject) =>
-    {
+  db.addRole = (roleID, nameTag) => {
+    return new Promise((resolve, reject) => {
       db.roles.insert({_id: roleID, name: nameTag}, (err, doc) => {
-        if(err)
-        {
+        if(err) {
           reject(err);
         }
         resolve(doc);
       });
     });
   }
-  db.searchRoleByID = function(roleID)
-  {
-    return new Promise((resolve, reject) =>
-    {
-      db.roles.findOne({_id: roleID}, (err, role) =>
-      {
-        if(err)
-        {
+  db.searchRoleByID = (roleID) => {
+    return new Promise((resolve, reject) => {
+      db.roles.findOne({_id: roleID}, (err, role) => {
+        if(err) {
           reject(err);
         }
         resolve(role); 
       });
     });
   }
-  db.listRoles = function()
-  {
-    return new Promise((resolve, reject) =>
-    {
-      db.roles.find({}, (err, docs) =>
-      {
-        if(err)
-        {
+  db.listRoles = () => {
+    return new Promise((resolve, reject) => {
+      db.roles.find({}, (err, docs) => {
+        if(err) {
           reject(err);
         }
         resolve(docs.map(roleEntry => roleEntry.name));
       });
     });
+  }
+  /**
+   * DB setup for permissions
+   */
+  db.permissions = new Datastore('./src/lib/databases/permissions.db');
+  db.permissions.loadDatabase();
+  // autocompaction every 10 minutes
+  db.permissions.persistence.setAutocompactionInterval(600000);
+  /**
+   * DB functions for permissions
+   */
+  // Type is the type of ID, either role or user ID, permLevel is either 
+  db.addPerm = (permLevel) => {
+    return new Promise((resolve, reject) => {
+      db.permissions.insert({_id: permLevel, users: [], roles: []}, (err, doc) => {
+        if(err) {
+          reject(err);
+        }
+        resolve(doc);
+      });
+    });
+  }
+  db.removePerm = (permLevel) => {
+    return new Promise((resolve, reject) => {
+      db.permissions.remove({_id: permLevel}, {}, (err, numRemoved) => {
+        if(err) {
+          reject(err);
+        }
+        resolve(numRemoved);
+      });
+    });
+  }
+  db.addPermUser = (permLevel, userID) => {
+    return new Promise((resolve, reject) => {
+      db.permissions.update({_id: permLevel}, {$push: {users: userID}}, {}, (err, numChanged) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(numChanged);
+      });
+    });
+  }
+  db.removePermUser = (permLevel, userID) => {
+    return new Promise((resolve, reject) => {
+      db.permissions.update({_id: permLevel}, {$pull: {users: userID}}, {}, (err, numChanged) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(numChanged);
+      });
+    });
+  }
+  db.addPermRole = (permLevel, roleID) => {
+    return new Promise((resolve, reject) => {
+      db.permissions.update({_id: permLevel}, {$push: {roles: roleID}}, {}, (err, numChanged) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(numChanged);
+      });
+    });
+  }
+  db.removePermRole = (permLevel, roleID) => {
+    return new Promise((resolve, reject) => {
+      db.permissions.update({_id: permLevel}, {$pull: {roles: roleID}}, {}, (err, numChanged) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(numChanged);
+      });
+    });
+  }
+  db.findPerm = (userID, roleIDs) => {
+    return new Promise((resolve, reject) => {
+      db.permissions.findOne({$or: [{roles: {$in: roleIDs}}, {users: userID}]}, (err, docs) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(docs);
+      })
+    })
   }
   /**
    * DB setup for tags
@@ -103,61 +163,45 @@ module.exports = function utility(requires)
   /**
    * DB functions for roles
    */
-  db.addTag = function(tagName, content)
-  {
+  db.addTag = (tagName, content) => {
     return new Promise((resolve, reject) => {
-      db.tags.insert({_id: tagName, content: content}, (err, doc) =>
-      {
-        if(err)
-        {
+      db.tags.insert({_id: tagName, content: content}, (err, doc) => {
+        if(err) {
           reject(err);
         }
         resolve(doc);
       });
     });
   }
-  db.removeTag = function(tagName)
-  {
-    return new Promise((resolve, reject) =>
-    {
-      db.tags.remove({_id: tagName}, {}, (err, numRemoved) =>
-      {
-        if(err)
-        {
+  db.removeTag = (tagName) => {
+    return new Promise((resolve, reject) => {
+      db.tags.remove({_id: tagName}, {}, (err, numRemoved) => {
+        if(err) {
           reject(err);
         }
         resolve(numRemoved);
       });
     });
   }
-  db.searchTag = function(tagName)
-  {
-    return new Promise((resolve, reject) =>
-    {
-      db.tags.findOne({_id: tagName}, (err, doc) =>
-      {
-        if(err)
-        {
+  db.searchTag = (tagName) => {
+    return new Promise((resolve, reject) => {
+      db.tags.findOne({_id: tagName}, (err, doc) => {
+        if(err) {
           reject(err);
         }
         resolve(doc);
       });
     });
   }
-  db.listTags = function()
-  {
-    return new Promise((resolve, reject) =>
-    {
-      db.tags.find({}, (err, docs) =>
-      {
-        if(err)
-        {
+  db.listTags = () => {
+    return new Promise((resolve, reject) => {
+      db.tags.find({}, (err, docs) => {
+        if(err) {
           reject(err);
         }
         resolve(docs.map(tagEntry => tagEntry._id));
       });
     });
   }
-
   return db;
 };

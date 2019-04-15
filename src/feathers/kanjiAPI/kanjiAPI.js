@@ -22,6 +22,32 @@ module.exports = function feather(requires)
       }).catch(reject);
     });
   }
+  //find random kanji
+  feather.randomKanji = () => {
+    return new Promise((resolve, reject) => {
+      randomKanjiReq().then((data) => {
+        resolve(prettyDisplay(data));
+      }).catch(reject);
+    })
+  }
+  const randomKanjiReq = () => {
+    return new Promise((resolve, reject) =>
+    {
+      let url = 'https://skurt.me/api/kanji/random';
+      snekfetch.get(url).set('Content-type', 'application/json').set('authorization', config.key)
+        .then((response) =>
+        {
+          if(response.statusCode === 200)
+          {
+            resolve(response.body);
+          }
+          else
+          {
+            reject(response);
+          }
+        }).catch(reject);
+    });
+  }
   //helper functions
   const kanjiReq = function(kanji)
   {
@@ -90,8 +116,10 @@ module.exports = function feather(requires)
         }
         let readings = {name: 'Readings', value: `${body.reading.ja_on.join('\n')}\n${body.reading.ja_kun.join('\n')}`, inline: true};
         fields.push(readings);
-        let meanings = {name: 'Meanings', value: body.meanings.join('\n'), inline: true};
-        fields.push(meanings);
+        if(body.meanings) {
+          let meanings = {name: 'Meanings', value: body.meanings.join('\n'), inline: true};
+          fields.push(meanings);
+        }
         emb.fields = fields;
         return emb;
       }

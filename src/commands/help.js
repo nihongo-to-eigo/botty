@@ -18,28 +18,46 @@ module.exports = function command(requires)
       emb.fields = [];
       emb.title = 'Help';
       emb.description = "You can DM the bot :heart:";
-
-      Object.keys(info.commands).forEach((command,index) =>
-      {
-        let field = {};
-        //Looks to see if it's an admin comand. If it is, don't display the info.
-        if(info.commands[command].getPerm() === 'private' && !details.isAdministrator)
-        {
-          return;
+      let permPromise;
+      if(details.member) {
+        permPromise = info.db.findPerm(details.userID, details.member.roles);
+      } else {
+        permPromise = info.db.findPerm(details.userID, []);
+      }
+      permPromise.then(perm => {
+        let permissionLevel
+        if(perm === null) {
+          permissionLevel = 'none';
+        } else {
+          permissionLevel = perm._id;
         }
-        //create the entry in the embed
-        let prefix = info.config.prefix;
-        let aliases = prefix + info.commands[command].getAlias().join(', ' + prefix);      
-        field.name = `${prefix}${command}, ${aliases}`;
-        field.value = info.commands[command].getDesc();
-        field.inline = info.commands[command].inline;
-        emb.fields.push(field);
-      });
-      
-      //seeeeend it once all of the commands are iterated through
-      bot.createMessage(details.channelID, {
-        embed: emb
-      });     
+        Object.keys(info.commands).forEach((command,index) =>
+        {
+          let field = {};
+          //Looks to see if it's an admin comand. If it is, don't display the info.
+          if(info.commands[command].getPerm() === 'private' && !details.isAdministrator)
+          {
+            return;
+          } else if(info.commands[command].getPerm() === 'high' && (!details.isAdministrator && permissionLevel !== 'high')) {
+            return;
+          } else if(info.commands[command].getPerm() === 'low' && (!details.isAdministrator && permissionLevel !== 'high' && permissionLevel !== 'low')) {
+            return;
+          }
+          //create the entry in the embed
+          let prefix = info.config.prefix;
+          let aliases = prefix + info.commands[command].getAlias().join(', ' + prefix);      
+          field.name = `${prefix}${command}, ${aliases}`;
+          field.value = info.commands[command].getDesc();
+          field.inline = info.commands[command].inline;
+          emb.fields.push(field);
+        });
+        
+        //seeeeend it once all of the commands are iterated through
+        bot.createMessage(details.channelID, {
+          embed: emb
+        });
+      })
+
     }
   }, requires);
 };
