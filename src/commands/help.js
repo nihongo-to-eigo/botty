@@ -26,6 +26,10 @@ module.exports = function command(requires)
         if(info.commands[command].getPerm() === 'private' && !details.isAdministrator)
         {
           return;
+        } else if(info.commands[command].getPerm() === 'high' && (!details.isAdministrator && details.permissionLevel !== 'high')) {
+          return;
+        } else if(info.commands[command].getPerm() === 'low' && (!details.isAdministrator && details.permissionLevel !== 'high' && details.permissionLevel !== 'low')) {
+          return;
         }
         //create the entry in the embed
         let prefix = info.config.prefix;

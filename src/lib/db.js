@@ -77,15 +77,15 @@ module.exports = function utility(requires) {
    */
   db.permissions = new Datastore('./src/lib/databases/permissions.db');
   db.permissions.loadDatabase();
-  //autocompaction every 10 minutes
+  // autocompaction every 10 minutes
   db.permissions.persistence.setAutocompactionInterval(600000);
   /**
    * DB functions for permissions
    */
   // Type is the type of ID, either role or user ID, permLevel is either 
-  db.addPermID = (id, permLevel, type) => {
+  db.addPerm = (permLevel) => {
     return new Promise((resolve, reject) => {
-      db.permissions.insert({_id: id, permLevel, type}, (err, doc) => {
+      db.permissions.insert({_id: permLevel, users: [], roles: []}, (err, doc) => {
         if(err) {
           reject(err);
         }
@@ -93,15 +93,65 @@ module.exports = function utility(requires) {
       });
     });
   }
-  db.removePermID = (id) => {
+  db.removePerm = (permLevel) => {
     return new Promise((resolve, reject) => {
-      db.permissions.remove({_id: id}, {}, (err, numRemoved) => {
+      db.permissions.remove({_id: permLevel}, {}, (err, numRemoved) => {
         if(err) {
           reject(err);
         }
         resolve(numRemoved);
       });
     });
+  }
+  db.addPermUser = (permLevel, userID) => {
+    return new Promise((resolve, reject) => {
+      db.permissions.update({_id: permLevel}, {$push: {users: userID}}, {}, (err, numChanged) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(numChanged);
+      });
+    });
+  }
+  db.removePermUser = (permLevel, userID) => {
+    return new Promise((resolve, reject) => {
+      db.permissions.update({_id: permLevel}, {$pull: {users: userID}}, {}, (err, numChanged) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(numChanged);
+      });
+    });
+  }
+  db.addPermRole = (permLevel, roleID) => {
+    return new Promise((resolve, reject) => {
+      db.permissions.update({_id: permLevel}, {$push: {roles: roleID}}, {}, (err, numChanged) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(numChanged);
+      });
+    });
+  }
+  db.removePermRole = (permLevel, roleID) => {
+    return new Promise((resolve, reject) => {
+      db.permissions.update({_id: permLevel}, {$pull: {roles: roleID}}, {}, (err, numChanged) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(numChanged);
+      });
+    });
+  }
+  db.findPerm = (userID, roleIDs) => {
+    return new Promise((resolve, reject) => {
+      db.permissions.findOne({$or: [{roles: {$in: roleIDs}}, {users: userID}]}, (err, docs) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(docs);
+      })
+    })
   }
   /**
    * DB setup for tags

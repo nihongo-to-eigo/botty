@@ -9,7 +9,7 @@ module.exports = function command(requires)
     inline: true,
     alias: ['sr'],
     description: 'Sets available user roles.',
-    permission: 'custom',
+    permission: 'high',
     action: function(details)
     {
       const bot = requires.bot;
