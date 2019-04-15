@@ -150,6 +150,7 @@ class Bot extends EventEmitter
     let details = {
       user: message.author.username,
       userID: message.author.id,
+      author: message.author,
       channelID: message.channel.id,
       message: message.content,
       isDirectMessage: bot.privateChannels.get(message.channel.id) !== undefined ? true : false,

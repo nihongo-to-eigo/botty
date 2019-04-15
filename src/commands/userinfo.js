@@ -71,15 +71,15 @@ module.exports = function command(requires)
       const getAvatar = function(uid)
       {
         let ava = undefined;
-        let userAva = bot.users[uid].avatar;
-        if(userAva === null) return `https://cdn.discordapp.com/embed/avatars/${parseInt(bot.users[uid].discriminator, 10) % 5}.png`
+        let userAva = bot.users.get(uid).avatar;
+        if(userAva === null) return `https://cdn.discordapp.com/embed/avatars/${parseInt(bot.users.get(uid).discriminator, 10) % 5}.png`
         if(bot.users[uid].avatar.startsWith('a_'))
         {
-          ava = 'https://cdn.discordapp.com/avatars/' +uid+'/'+bot.users[uid].avatar+'.gif';
+          ava = 'https://cdn.discordapp.com/avatars/' +uid+'/'+userAva+'.gif';
         }
         else
         {
-          ava = 'https://cdn.discordapp.com/avatars/' +uid+'/'+bot.users[uid].avatar+'.webp';
+          ava = 'https://cdn.discordapp.com/avatars/' +uid+'/'+userAva+'.webp';
         }
         return ava;
       };
