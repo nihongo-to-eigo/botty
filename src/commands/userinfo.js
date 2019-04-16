@@ -33,10 +33,9 @@ module.exports = function command(requires)
 
         if(extras)
         {
-          emb.color = bot.guilds.get(details.serverID).members.get(uid).color;
-          if(bot.guilds.get(details.serverID).members.get(uid).nick)
+          if(server.members.get(uid).nick)
           {
-            let nickname = {name: "Nickname:", value: bot.guilds.get(details.serverID).members.get(uid).nick};
+            let nickname = {name: "Nickname:", value: server.members.get(uid).nick};
             fields.push(nickname);
           }          
           let joined = {name: "Joined", value: getJoinedTime(uid)};
@@ -45,9 +44,9 @@ module.exports = function command(requires)
 
         let created = {name: "Created:", value: getCreatedTime(uid)};
         fields.push(created);
-        if(bot.users.get(uid).game != null)
+        if(server.members.get(uid).game != null)
         {
-          let playing = {name: 'Playing:', value: bot.users.get(uid).game.name};
+          let playing = {name: 'Playing:', value: server.members.get(uid).game.name};
           fields.push(playing);
         }
 
