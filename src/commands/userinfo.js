@@ -73,7 +73,7 @@ module.exports = function command(requires)
         let ava = undefined;
         let userAva = bot.users.get(uid).avatar;
         if(userAva === null) return `https://cdn.discordapp.com/embed/avatars/${parseInt(bot.users.get(uid).discriminator, 10) % 5}.png`
-        if(bot.users[uid].avatar.startsWith('a_'))
+        if(userAva.startsWith('a_'))
         {
           ava = 'https://cdn.discordapp.com/avatars/' +uid+'/'+userAva+'.gif';
         }
