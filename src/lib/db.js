@@ -250,7 +250,7 @@ module.exports = function utility(requires) {
       });
     });
   }
-    /**
+  /**
    * DB setup for infractions
    */
   db.infractions = new Datastore('./src/lib/databases/infractions.db');
@@ -287,6 +287,43 @@ module.exports = function utility(requires) {
         resolve(doc);
       });
     });
+  }
+  /**
+   * DB setup for infractions
+   */
+  db.settings = new Datastore('./src/lib/databases/settings.db');
+  db.settings.loadDatabase();
+  //autocompaction every 10 minutes: _id is the setting key
+  db.settings.persistence.setAutocompactionInterval(600000);
+  db.addSetting = (setting, value) => {
+    return new Promise((resolve, reject) => {
+      db.settings.insert({_id: setting, value}, (err, doc) => {
+        if(err) {
+          reject(err);
+        }
+        resolve(doc);
+      });
+    });
+  }
+  db.removeSetting = (setting) => {
+    return new Promise((resolve, reject) => {
+      db.settings.remove({_id: setting}, {}, (err, numRemoved) => {
+        if(err) {
+          reject(err);
+        }
+        resolve(numRemoved);
+      });
+    });
+  }
+  db.getSettings = () => {
+    return new Promise((resolve, reject) => {
+      db.settings.find({}, (err, docs) => {
+        if(err) {
+          reject(err);
+        }
+        resolve(docs);
+      })
+    })
   }
   return db;
 };
