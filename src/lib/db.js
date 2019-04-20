@@ -203,5 +203,90 @@ module.exports = function utility(requires) {
       });
     });
   }
+  /**
+   * DB setup for timers
+   */
+  db.timers = new Datastore('./src/lib/databases/timers.db');
+  db.timers.loadDatabase();
+  //autocompaction every 10 minutes
+  db.timers.persistence.setAutocompactionInterval(600000);
+  db.addTimer = (userID, type, timeEnd) => {
+    return new Promise((resolve, reject) => {
+      db.timers.insert({userID, type, timeEnd}, (err, doc) => {
+        if(err) {
+          reject(err);
+        }
+        resolve(doc);
+      });
+    });
+  }
+  db.removeTimer = (id) => {
+    return new Promise((resolve, reject) => {
+      db.timers.remove({_id: id}, (err, numRemoved) => {
+        if(err) {
+          reject(err);
+        }
+        resolve(numRemoved);
+      });
+    });
+  }
+  db.removePassed = (date) => {
+    return new Promise((resolve, reject) => {
+      db.timers.remove({timeEnd: {$lt: date}}, {multi: true}, (err, docsChanged) => {
+        if(err) {
+          reject(err);
+        }
+        resolve(docsChanged);
+      })
+    })
+  }
+  db.findPassed = (date) => {
+    return new Promise((resolve, reject) => {
+      db.timers.find({timeEnd: {$lt: date}}, (err, docs) => {
+        if(err) {
+          reject(err);
+        }
+        resolve(docs);
+      });
+    });
+  }
+    /**
+   * DB setup for infractions
+   */
+  db.infractions = new Datastore('./src/lib/databases/infractions.db');
+  db.infractions.loadDatabase();
+  //autocompaction every 10 minutes
+  db.infractions.persistence.setAutocompactionInterval(600000);
+  db.addInfraction = (userID, type, time, reason = '') => {
+    return new Promise((resolve, reject) => {
+      db.getInfractions(userID).then(doc => {
+        if(doc === null) {
+          db.infractions.insert({_id: userID, infractions: [{type, time, reason}]}, (err, doc) => {
+            if(err) {
+              reject(err);
+            }
+            resolve(doc);
+          });
+        }
+        db.infractions.update({_id: userID}, {$push: {infractions: {type, time, reason}}}, {}, (err, numUpdated) => {
+          if(err) {
+            reject(err);
+          }
+          resolve(numUpdated);
+        });
+      });
+
+    });
+  }
+  db.getInfractions = (userID) => {
+    return new Promise((resolve, reject) => {
+      db.infractions.findOne({_id: userID}, (err, doc) => {
+        if(err) {
+          reject(err);
+        }
+        resolve(doc);
+      });
+    });
+  }
   return db;
 };

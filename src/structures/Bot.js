@@ -9,13 +9,13 @@ const Client = require('eris');
 const Loader = require('./Loader');
 const CommandLoader = require('./CommandLoader');
 const FeatherLoader = require('./FeatherLoader');
+const Clock = require('../structures/Clock');
 
 /**
  * @class
  * @extends EventEmitter
  */
-class Bot extends EventEmitter
-{
+class Bot extends EventEmitter {
   /**
    * Constructor for the Bot class
    * @param {Object} settings - Object that holds the settings for the Bot class.
@@ -24,8 +24,7 @@ class Bot extends EventEmitter
    * @param {Boolean} [settings.shard = false] - Lets the bot know if it needs to shard.
    * @param {Boolean} [settings.forked = false] - If the bot is a forked process, this should be true
    */
-  constructor(settings)
-  {
+  constructor(settings) {
     //inherit EventEmitter's constructor
     super();
     //settings
@@ -45,10 +44,8 @@ class Bot extends EventEmitter
     this.requires = {};
     //Let's do some wizardry to extend Object a little more in this instance ;)
     Object.defineProperty(this.requires, 'merge', {
-      value: (obj2) =>
-      {
-        Object.keys(obj2).forEach((attrib) =>
-        {
+      value: (obj2) => {
+        Object.keys(obj2).forEach((attrib) => {
           this[attrib] = obj2[attrib];
         });
 
@@ -73,25 +70,22 @@ class Bot extends EventEmitter
       info: this.requires,
       bObj: this
     });
-    Promise.all([commandPromise,modulePromise, featherPromise, this.client.connect()]).then((values) =>
-    {
+    Promise.all([commandPromise,modulePromise, featherPromise, this.client.connect()]).then((values) => {
       this.requires.commands = values[0].commands;
       this.requires.privates = values[0].privates;
       //this.requires.merge(values[1]);
       this.requires = Object.assign(this.requires, values[1]);
       this.requires.feathers = values[2];
       this.emit('ready');
-    }).catch((err) =>
-    {
+    }).catch((err) => {
       console.log(err);
-      if(this.debug)
-      {
+      if(this.debug) {
         console.log(err);
       }
     });
-    this.on('ready', () =>
-    {
+    this.on('ready', () => {
       console.log('Bot Backend Ready');
+      this.clock = new Clock();
       this.start();
     });
   }
@@ -99,29 +93,28 @@ class Bot extends EventEmitter
    * Let the bot know to start processing.
    * @function
    */
-  start()
-  {
+  start() {
     let bot = this.client;
+    const { clock } = this;
+    this.handleTimer = require('../lib/handleTimer')(this.requires.db, bot, this.requires.config);
     //let's not let the functions go crazy and bind themselves to this.client
     bot.on('ready', this.onReady.bind(this));
     bot.on('messageCreate', this.onMessage.bind(this));
     bot.on('disconnect', this.onDisconnect.bind(this));
     bot.on('error', (err) => console.log(err));
-    if(this.debug)
-    {
+    if(this.debug) {
       bot.on('debug', this.onDebug.bind(this));
     }
-    bot.on('guildDelete', (server) =>
-    {
+    bot.on('guildDelete', (server) => {
       console.log(`Left ${server}`);
     });
+    clock.on('tick', this.handleTimer.processTick);
   }
   /**
    * Action to take when the bot is ready
    * @function
    */
-  onReady()
-  {
+  onReady() {
     let bot = this.client;
     let utility = this.requires.utility;
     let config = this.config;
@@ -140,8 +133,7 @@ class Bot extends EventEmitter
    * @param {String} message - The message that was sent.
    * @param {event} - The raw event caused by the message.
    */
-  onMessage(message)
-  {
+  onMessage(message) {
     let bot = this.client;
     let commands = this.requires.commands;
     let privates = this.requires.privates;
@@ -177,24 +169,18 @@ class Bot extends EventEmitter
     keyword = keyword.toLowerCase();
     
     //if the command exists, check the permissions.
-    if(commands[keyword] && typeof commands[keyword].getAction() === 'function')
-    {
+    if(commands[keyword] && typeof commands[keyword].getAction() === 'function') {
       processCommand(keyword, details, db);
-    }
-    else
-    {
+    } else {
       //didn't find command
-      for(let index in commands)
-      {
-        if(commands[index] && typeof commands[index] === 'object' && commands[index].getAlias().indexOf(keyword) > -1)
-        {
+      for(let index in commands) {
+        if(commands[index] && typeof commands[index] === 'object' && commands[index].getAlias().indexOf(keyword) > -1) {
           processCommand(index, details, db);
         }
       }
     }
     
-    function handleDisabled(details)
-    {
+    function handleDisabled(details) {
       bot.sendMessage({
         to: details.channelID,
         embed: {
@@ -203,8 +189,7 @@ class Bot extends EventEmitter
         }
       });
     }
-    function processCommand(command, details, db)
-    {
+    function processCommand(command, details, db) {
       const permLevel = commands[command].getPerm();
       if(permLevel === 'public') {
         commands[command].act(details);
@@ -242,10 +227,8 @@ class Bot extends EventEmitter
                 commands[command].act(details);
               }
             }
-
           }).catch(console.log)
         }
-        
       }
     }
   }
@@ -254,12 +237,10 @@ class Bot extends EventEmitter
    * @param {String} errMsg - Error message.
    * @param {String} code - Error code.
    */
-  onDisconnect(errMsg, code)
-  {
+  onDisconnect(errMsg, code) {
     let manualKill = this.manualKill;
     console.log(`ERROR ${code}: ${errMsg}`);
-    if(manualKill)
-    {
+    if(manualKill) {
       console.log('Kill command used.');
       process.exit(0);
     }
@@ -268,15 +249,13 @@ class Bot extends EventEmitter
    * Handles debug events for the lib/bot itself.
    * @param {String} debugStatement 
    */
-  onDebug(debugStatement)
-  {
+  onDebug(debugStatement) {
     console.log(debugStatement);
   }
   /**
    * Sets the manualKill variable to true and disconnects the bot
    */
-  kill()
-  {
+  kill() {
     this.manualKill = true;
     this.client.disconnect();
   }
