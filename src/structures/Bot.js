@@ -76,6 +76,18 @@ class Bot extends EventEmitter {
       //this.requires.merge(values[1]);
       this.requires = Object.assign(this.requires, values[1]);
       this.requires.feathers = values[2];
+      this.requires.db.getSettings().then(settingsArr => {
+        if(settingsArr !== null) {
+          const settingsObj = {};
+          const len = settingsArr.length;
+          settingsArr.forEach((setting, index) => {
+            settingsObj[setting._id] = setting.value;
+            if(index === len -1) {
+              this.requires.settings = settingsObj;
+            }
+          });
+        }
+      });
       this.emit('ready');
     }).catch((err) => {
       console.log(err);
@@ -96,7 +108,7 @@ class Bot extends EventEmitter {
   start() {
     let bot = this.client;
     const { clock } = this;
-    this.handleTimer = require('../lib/handleTimer')(this.requires.db, bot, this.requires.config);
+    this.handleTimer = require('../lib/handleTimer')(this.requires.db, bot, this.requires.settings);
     //let's not let the functions go crazy and bind themselves to this.client
     bot.on('ready', this.onReady.bind(this));
     bot.on('messageCreate', this.onMessage.bind(this));

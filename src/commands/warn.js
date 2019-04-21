@@ -27,6 +27,7 @@ module.exports = function command(requires)
           if(userTest) {
             const reason = details.input.replace(idAndSpace, '');
             info.db.addInfraction(userTest, 'warn', new Date, reason);
+            bot.users.get(userTest).addRole(info.settings.warn_role_id);
             bot.createMessage(details.channelID,{content:`${details.args[1]}, you have been warned for: ${reason}`});
           }
 

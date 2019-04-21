@@ -260,6 +260,7 @@ module.exports = function utility(requires) {
   db.addInfraction = (userID, type, time, reason = '') => {
     return new Promise((resolve, reject) => {
       db.getInfractions(userID).then(doc => {
+        console.log(doc);
         if(doc === null) {
           db.infractions.insert({_id: userID, infractions: [{type, time, reason}]}, (err, doc) => {
             if(err) {
@@ -267,15 +268,15 @@ module.exports = function utility(requires) {
             }
             resolve(doc);
           });
+        } else {
+          db.infractions.update({_id: userID}, {$push: {infractions: {type, time, reason}}}, {}, (err, numUpdated) => {
+            if(err) {
+              reject(err);
+            }
+            resolve(numUpdated);
+          });
         }
-        db.infractions.update({_id: userID}, {$push: {infractions: {type, time, reason}}}, {}, (err, numUpdated) => {
-          if(err) {
-            reject(err);
-          }
-          resolve(numUpdated);
-        });
       });
-
     });
   }
   db.getInfractions = (userID) => {
