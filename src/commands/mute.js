@@ -50,6 +50,7 @@ module.exports = function command(requires)
               const mutedUser = bot.guilds.get(info.settings.home_server_id).members.get(userTest);
               if(mutedUser !== undefined) {
                 bot.createMessage(details.channelID, {content: `User will be muted until ${muteEnd.toUTCString()}`});
+                bot.createMessage(info.settings.private_log_channel, {embed: {title: 'Log', fields: [{name: 'User', value: details.args[1]}, {name: 'Action', value: 'mute'} ,{name: 'Reason', value: details.input.replace(idAndTime, '')}, {name: 'Responsible Mod', value: `<@${details.userID}>`}]}});
                 mutedUser.addRole(info.settings.mute_role_id, details.input.replace(idAndTime, ''));
               }
               
