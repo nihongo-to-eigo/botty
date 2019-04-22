@@ -1,15 +1,17 @@
-module.exports = (db, bot, settings) => {
+module.exports = (requires) => {
+  const { info, bot } = requires;
+
   const handler = {};
   function searchForMuted(roles) {
-    roles.includes(settings.mute_role_id)
+    roles.includes(info.settings.mute_role_id)
   }
   function unmuteUser(userID) {
-    const user = bot.guilds.get(settings.home_server_id).members.get(userID);
+    const user = bot.guilds.get(info.settings.home_server_id).members.get(userID);
     if(user !== undefined) {
-      const isMuted = user.roles.includes(settings.mute_role_id);
+      const isMuted = user.roles.includes(info.settings.mute_role_id);
       if(isMuted) {
-        user.removeRole(settings.mute_role_id, 'Mute timer expired');
-        bot.createMessage(settings.public_log_channel, {content: `<@${userID}>, you have been unmuted.`});
+        user.removeRole(info.settings.mute_role_id, 'Mute timer expired');
+        bot.createMessage(info.settings.public_log_channel, {content: `<@${userID}>, you have been unmuted.`});
       }
     }
   }
@@ -24,10 +26,10 @@ module.exports = (db, bot, settings) => {
   handler.processTick = () => {
     const now = new Date;
     //console.log('tick');
-    db.findPassed(now).then(passedTimers => {
+    info.db.findPassed(now).then(passedTimers => {
       processPassed(passedTimers);
       // do something, then delet passed Timers
-      db.removePassed(now).then(numRemoved => {
+      info.db.removePassed(now).then(numRemoved => {
         //console.log(numRemoved);
       }).catch(console.log);
     }).catch(console.log);

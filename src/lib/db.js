@@ -250,6 +250,16 @@ module.exports = function utility(requires) {
       });
     });
   }
+  db.getUserTimer = (userID) => {
+    return new Promise((resolve, reject) => {
+      db.timers.find({ userID }, (err, docs) => {
+        if(err) {
+          reject(err);
+        }
+        resolve(docs);
+      })
+    })
+  }
   /**
    * DB setup for infractions
    */
@@ -260,7 +270,6 @@ module.exports = function utility(requires) {
   db.addInfraction = (userID, type, time, reason = '') => {
     return new Promise((resolve, reject) => {
       db.getInfractions(userID).then(doc => {
-        console.log(doc);
         if(doc === null) {
           db.infractions.insert({_id: userID, infractions: [{type, time, reason}]}, (err, doc) => {
             if(err) {

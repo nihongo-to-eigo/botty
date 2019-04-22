@@ -70,7 +70,7 @@ class Bot extends EventEmitter {
       info: this.requires,
       bObj: this
     });
-    Promise.all([commandPromise,modulePromise, featherPromise, this.client.connect()]).then((values) => {
+    Promise.all([commandPromise, modulePromise, featherPromise, this.client.connect()]).then((values) => {
       this.requires.commands = values[0].commands;
       this.requires.privates = values[0].privates;
       //this.requires.merge(values[1]);
@@ -108,7 +108,8 @@ class Bot extends EventEmitter {
   start() {
     let bot = this.client;
     const { clock } = this;
-    this.handleTimer = require('../lib/handleTimer')(this.requires.db, bot, this.requires.settings);
+    const { handleTimer, handleJoin } = this.requires;
+
     //let's not let the functions go crazy and bind themselves to this.client
     bot.on('ready', this.onReady.bind(this));
     bot.on('messageCreate', this.onMessage.bind(this));
@@ -120,7 +121,8 @@ class Bot extends EventEmitter {
     bot.on('guildDelete', (server) => {
       console.log(`Left ${server}`);
     });
-    clock.on('tick', this.handleTimer.processTick);
+    bot.on('guildMemberAdd', handleJoin.processJoin);
+    clock.on('tick', handleTimer.processTick);
   }
   /**
    * Action to take when the bot is ready

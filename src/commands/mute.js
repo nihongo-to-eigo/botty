@@ -47,10 +47,10 @@ module.exports = function command(requires)
               }
               info.db.addTimer(userTest, 'mute', muteEnd);
               info.db.addInfraction(userTest, 'mute', new Date, details.input.replace(idAndTime, ''));
-              const mutedUser = bot.guilds.get(info.config.home_server_id).members.get(userTest);
+              const mutedUser = bot.guilds.get(info.settings.home_server_id).members.get(userTest);
               if(mutedUser !== undefined) {
                 bot.createMessage(details.channelID, {content: `User will be muted until ${muteEnd.toUTCString()}`});
-                mutedUser.addRole(info.config.mute_role_id, details.input.replace(idAndTime, ''));
+                mutedUser.addRole(info.settings.mute_role_id, details.input.replace(idAndTime, ''));
               }
               
             }
