@@ -149,10 +149,10 @@ module.exports = (requires) => {
     return null; 
   };
 
-  utilities.hasPermission = function(commandPerm, userLevel) {
-    // 'high' can execute both 'high' and 'low' commands
+  utilities.hasPermission = function(commandLevel, userLevel) {
+    // 'high' can execute both 'high' and 'low' commands, but not 'private'
     // commands that are 'low' can be used no matter one's permission level
-    if(userLevel === 'high' || commandLevel === 'low') {
+    if((userLevel === 'high' && commandLevel != 'private')  || commandLevel === 'low'){
       return true;
     } else {
       return false;
