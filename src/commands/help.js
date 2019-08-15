@@ -8,8 +8,8 @@ module.exports = function command(requires)
     name: 'Help',
     inline: true,
     alias: ['?', 'h'],
-    blurb: 'See usage details for commands with `!help <command>` or bring up a list of available commands',
-    longDescription: '',
+    blurb: 'See function and usage of each command',
+    longDescription: 'See usage details for commands or bring up a list of available commands',
     usages: ['`!help` ― Shows list of commands with short descriptions', '`!help {command}` ― Shows full help message for a specific command'],
     permission: 'public',
     action: function(details)

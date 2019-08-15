@@ -8,7 +8,7 @@ module.exports = function command(requires)
     name: 'Load Settings',
     inline: true,
     alias: ['ls'],
-    description: 'Loads the settings to the db',
+    blurb: 'Loads the settings to the db',
     permission: 'private',
     action: function(details)
     {
@@ -23,7 +23,7 @@ module.exports = function command(requires)
           }
         });
         requires.bot.createMessage(details.channelID, {content: 'Settings loaded'});
-      })
+      });
     }
   }, requires);
 };

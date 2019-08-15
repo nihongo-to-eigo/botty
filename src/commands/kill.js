@@ -8,7 +8,9 @@ module.exports = function command(requires)
     name: 'Kill',
     inline: true,
     alias: ['ki'],
-    description: 'Kills the bot',
+    blurb: 'Kills the bot', 
+    longDescription: 'Sometimes you just gotta do it ┐(´д｀)┌', 
+    usages: ['!kill'], 
     permission: 'private',
     action: function(details)
     {

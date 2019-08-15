@@ -8,7 +8,9 @@ module.exports = function command(requires)
     name: 'Jisho',
     inline: false,
     alias: ['j'],
-    description: '[<word/sentence>, <word/sentence> --list, <word/sentence> <number from --list>] Looks up a word from Jisho.org, you may use jisho <word> --list to get a list of dictionary entries. Then use jisho <word> <number> and that will display that entry',
+    blurb: 'Looks up word using Jisho API',
+    longDescription: 'Searches [Jisho](jisho.org) API for word definitions. Can search with both English and Japanese input, the interpretation of the input is left for jisho. \nBy default this returns the first result only, which may not always be what you want. You can grab results further down the list by adding a number after the word. You can get a list of results by adding `--list`. \nThis is especially useful when searching English words, as often the top result may not be what you actually want',
+    usages: ['`!jisho {word}` ― Returns top result for this word in the dictionary', '`!jisho {word} --list` ― Returns a list of all results from this lookup', '`!j {word} {number}` ― Return {number}th result for this word'],
     permission: 'public',
     action: function(details)
     {

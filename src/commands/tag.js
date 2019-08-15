@@ -8,7 +8,10 @@ module.exports = function command(requires)
     name: 'Tag',
     inline: true,
     alias: ['t'],
-    description: 'Lists tags, or displays the content of a specific tag',
+    blurb: 'Retrieves important texts', 
+    longDescription: 'Lists tags, or displays the content of a specific tag.', 
+    usages: ['!t ― Shows a list of all available tags',
+             '!t {tag name} ― Retrieves {tag name} '], 
     permission: 'public',
     action: function(details)
     {
@@ -21,7 +24,7 @@ module.exports = function command(requires)
         info.db.listTags().then((tagNames) =>
         {
           let emb = {};
-          emb.title = 'Tags.'
+          emb.title = 'Tags.';
           emb.description = tagNames.join('\n');
           bot.createMessage(details.channelID, {embed: emb});
         });

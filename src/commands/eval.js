@@ -8,7 +8,9 @@ module.exports = function command(requires)
     name: 'Debug',
     inline: true,
     alias: ['ev'],
-    description: 'Evaluates JS code',
+    blurb: 'Evaluates JS code', 
+    longDescription: '', 
+    usages: ['`!ev {javascript code}` ― Executes code '], 
     permission: 'private',
     action: function(details)
     {

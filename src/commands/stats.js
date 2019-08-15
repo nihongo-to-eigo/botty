@@ -8,7 +8,9 @@ module.exports = function command(requires)
     name: 'Stats',
     inline: true,
     alias: ['s'],
-    description: 'Returns stats on the bot.',
+    blurb: 'Returns stats on the bot.', 
+    longDescription: 'Gets basic info such as uptime.', 
+    usages: ['`!stats`'], 
     permission: 'public',
     action: function(details)
     {

@@ -8,7 +8,7 @@ module.exports = function command(requires)
     name: 'Pencil',
     inline: true,
     alias: ['p'],
-    description: 'Adds a pencil at the end of your nickname or username',
+    blurb: 'Adds a pencil at the end of your nickname or username',
     permission: 'public',
     action: function(details)
     {

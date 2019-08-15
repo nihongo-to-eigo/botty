@@ -8,7 +8,7 @@ module.exports = function command(requires)
     name: 'Set Perms',
     inline: true,
     alias: ['sp'],
-    description: 'Adds a role or user ID to the associated perm.',
+    blurb: 'Adds a role or user ID to the associated perm.',
     permission: 'private',
     action: function(details)
     {
