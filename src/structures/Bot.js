@@ -212,9 +212,8 @@ class Bot extends EventEmitter {
           }
           if(docs != null) {
             details.permissionLevel = docs._id;
-            if(permLevel === 'low' && (docs._id === 'low' || docs._id === 'high')) {
-              command.act(details);
-            } else if (permLevel === 'high' && (docs._id === 'high')) {
+            if(utility.hasPerm(permLevel, docs._id)) {
+              details.permissionLevel = docs._id;
               command.act(details);
             }
           }

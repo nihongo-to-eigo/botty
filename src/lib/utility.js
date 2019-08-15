@@ -147,7 +147,17 @@ module.exports = (requires) => {
       } 
     } 
     return null; 
-  }; 
+  };
+
+  utilities.hasPermission = function(commandPerm, userLevel) {
+    // 'high' can execute both 'high' and 'low' commands
+    // commands that are 'low' can be used no matter one's permission level
+    if(userLevel === 'high' || commandLevel === 'low') {
+      return true;
+    } else {
+      return false;
+    }
+  };
   
   utilities.red = 0xFF0000;
   utilities.green = 0x25bf06;
