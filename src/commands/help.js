@@ -23,7 +23,7 @@ module.exports = function command(requires)
       emb.description = "You can DM the bot :heart:";
       
       const listCommands = function()
-      {
+      {        
         emb.title = 'Help';
         emb.blurb = "You can DM the bot :heart:";
         Object.keys(info.commands).forEach((commandName,index) => {
@@ -36,9 +36,13 @@ module.exports = function command(requires)
           }
           //create the entry in the embed
           let prefix = info.config.prefix;
-          let aliases = prefix + command.getAlias().join(', ' + prefix);
+          let aliases = '';
+          if(command.getAlias()){
+            let separator = ', ' + prefix;
+            aliases = separator + command.getAlias().join(separator);
+          }
           let field = {};
-          field.name = `${prefix}${commandName}, ${aliases}`;
+          field.name = `${prefix}${commandName}${aliases}`;
           field.value = command.blurb;
           field.inline = false; //info.commands[command].inline;
           emb.fields.push(field);
@@ -63,16 +67,13 @@ module.exports = function command(requires)
         } else {
           emb.title = 'Info: ' + command.name;
           emb.description = command.blurb;
-          let fieldIdx = 0;
-          if(command.longDescription != '') {       
-            emb.fields[field] = {
-              name: 'Description:',
-              value: command.longDescription
-            };
-            fieldIdx += 1;
+          let fieldIdx = 0;    
+          emb.fields[fieldIdx] = {
+            name: 'Description:',
+            value: command.longDescription || 'No description'
           };
           if(command.usages) {
-            emb.fields[fieldIdx] = {
+            emb.fields[1] = {
               name: 'Usages:',
               value: command.usages.join('\n')
             };            
