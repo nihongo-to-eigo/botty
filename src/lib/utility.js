@@ -1,32 +1,22 @@
 'use strict';
-module.exports = function utility(requires)
-{
-  
+module.exports = (requires) => {
   const utilities = {};
   const bot = requires.bot;
   const info = requires.info;
   const config = info.config;
   
-  utilities.useSource = function(feather)
-  {
-    if(info.feathers[feather])
-    {
+  utilities.useSource = (feather) => {
+    if(info.feathers[feather]) {
       return info.feathers[feather];
-    }
-    else
-    {
+    } else {
       return false;
     }
   };
   //Gets a role by name
-  utilities.getRoleByName = function(serverID, name)
-  {
-    return new Promise((resolve, reject) =>
-    {
-      bot.guilds.get(serverID).roles.forEach((role) =>
-      {
-        if(bot.guilds.get(serverID).roles.get(role.id).name.toLowerCase() === name.toLowerCase())
-        {
+  utilities.getRoleByName = (serverID, name) => {
+    return new Promise((resolve, reject) => {
+      bot.guilds.get(serverID).roles.forEach((role) => {
+        if(bot.guilds.get(serverID).roles.get(role.id).name.toLowerCase() === name.toLowerCase()) {
           resolve(role.id);
         }
       });
@@ -34,34 +24,27 @@ module.exports = function utility(requires)
     });
   };
   //Wraps a string in 3 backticks to make a code block
-  utilities.codeBlock = function(str,style)
-  {
+  utilities.codeBlock = (str,style) => {
     return `\`\`\`${style || ''}\n${str}\n\`\`\``;
   };
   //wraps a string to add one backtick to each side to make an inline code block
-  utilities.codeInline = function(str)
-  {
+  utilities.codeInline = (str) => {
     return `\`${str}\``;
   };
   //Prints all of the roles in a server
-  utilities.printRoles = function(sid)
-  {
+  utilities.printRoles = (sid) => {
     let serv = '';
     let r = '';
     let roleStr = '';
-    for(r in bot.servers[sid].roles)
-    {
+    for(r in bot.servers[sid].roles) {
       roleStr += ('Name: ' + bot.servers[sid].roles[r].name + ' ID: ' + bot.servers[sid].roles[r].id + '\n');
     }
     return roleStr;
   };
   //Searches for an item in an array
-  utilities.searchArr = function(array, item)
-  {
-    for(let i = 0; i < array.length; i ++)
-    {
-      if(item == array[i])
-      {
+  utilities.searchArr = (array, item) => {
+    for(let i = 0; i < array.length; i ++) {
+      if(item == array[i]) {
         return true;
       }
     }
@@ -69,25 +52,20 @@ module.exports = function utility(requires)
   };
 
   //Checks to see if a message would be a command (Starts with the prefix)
-  utilities.isCommandForm = function(message)
-  {
+  utilities.isCommandForm = (message) => {
     return message.startsWith(config.prefix);
   };
 
   //Removes the prefix from the message
-  utilities.stripPrefix = function(message)
-  {
-    if(message.startsWith(config.prefix))
-    {
+  utilities.stripPrefix = (message) => {
+    if(message.startsWith(config.prefix)) {
       message = message.replace(config.prefix,'');
     }
     return message;
   };
   //Formats bytes.
-  utilities.formatBytes = function(bytes,decimals)
-  {
-    if (bytes === 0)
-    {
+  utilities.formatBytes = (bytes,decimals) => {
+    if (bytes === 0) {
       return '0 Byte';
     }
     const k = 1000;
@@ -97,13 +75,11 @@ module.exports = function utility(requires)
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   };
   //checks to see if the user that called a command is an Admin
-  utilities.isAdministrator = function(userID)
-  {
+  utilities.isAdministrator = (userID) => {
     return config.administrators.indexOf(userID) > -1;
   };
   //returns the userID of a mention
-  utilities.stripUID = function(userString)
-  {
+  utilities.stripUID = (userString) => {
     let userID = false;
     if (userString !== '')
     {
@@ -122,37 +98,30 @@ module.exports = function utility(requires)
     return userID;
   };
   //gets the role(s) of a userID, using sid for the serverID just in case the bot is on more than one
-  utilities.getRole = function (uid, sid)
-  {
+  utilities.getRole = (uid, sid) => {
     let roles = [];
     roles = bot.servers.get(sid).members.get(uid).roles;
     return roles;
   };
   //gets serverID
-  utilities.getServerID = function(channelID)
-  {
+  utilities.getServerID = (channelID) => {
     return bot.channels[channelID].guild_id;
   };
   //split message into 3 parts, [username, identifier, reason]
-  utilities.splitMessage = function(str)
-  {
+  utilities.splitMessage = (str) => {
     const patt = /.+#[0-9]{4}/g;
     var result = patt.exec(str);
     let resultArr = [];
-    if(result === null)
-    {
+    if(result === null) {
       return false;
-    }
-    else
-    {
+    } else {
       resultArr = result[0].split('#');
       resultArr.push(str.replace(result[0],'').replace(' ',''));
       return resultArr;
     }
   };
   //replaces %prefix with the prefix from config
-  utilities.filter = function(str)
-  {
+  utilities.filter = (str) => {
     return str.replace('%prefix', config.prefix);
   };
   utilities.red = 0xFF0000;
