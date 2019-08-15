@@ -7,10 +7,11 @@ module.exports = function command(requires)
   return new Command({
     name: 'Set Tags',
     inline: true,
+    alias: ['st'],
     blurb: 'Stores text for easy retrieval', 
     longDescription: 'Creates a retrivable message. Don\'t forget the `:` when creating a tag.  Calling without `:` and additional text removes a tag.', 
     usages: ['!st {tag name}: {text} ― Creates {tag name} tag that will return {text}',
-            '`!st {tag name} ― Removes {tag name}` '], 
+            '`!st {tag name} ― Removes {tag name}`'], 
     permission: 'low',
     action: function(details)
     {
