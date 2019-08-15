@@ -19,7 +19,7 @@ module.exports = function command(requires)
       if(details.input === "")
       {
         info.db.listRoles().then((roleNames) => {
-          let emb = {};
+          let emb = {}; 
           emb.title = 'User selectable roles.'
           emb.description = roleNames.join('\n');
           bot.createMessage(details.channelID, {embed: emb});
