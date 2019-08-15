@@ -204,40 +204,23 @@ class Bot extends EventEmitter {
       } else if(permLevel === 'private' && details.isAdministrator) {
         command.act(details);
       } else if(permLevel === 'high' || permLevel === 'low') {
-        if(!details.member) {
-          db.findPerm(details.userID, []).then(docs => {
-            if(docs === null) {
-              if(details.isAdministrator) {
-                command.act(details);
-              }
-              return;
-            } else {
-              details.permissionLevel = docs._id;
-              if(permLevel === 'low' && (docs._id === 'low' || docs._id === 'high' || details.isAdministrator)) {
-                command.act(details);
-              } else if (permLevel === 'high' && (docs._id === 'high' || details.isAdministrator)) {
-                command.act(details);
-              }
+        let roles = details.member ? details.member.roles : [];
+        db.findPerm(details.userID, roles).then(docs => {
+          if(details.isAdministrator) {
+            command.act(details);
+            return;
+          }
+          if(docs != null) {
+            details.permissionLevel = docs._id;
+            if(permLevel === 'low' && (docs._id === 'low' || docs._id === 'high')) {
+              command.act(details);
+            } else if (permLevel === 'high' && (docs._id === 'high')) {
+              command.act(details);
             }
-          }).catch(console.log);
-        } else {
-          db.findPerm(details.userID, details.member.roles).then(docs => {
-            if(docs === null) {
-              if(details.isAdministrator) {
-                command.act(details);
-              }
-              return;
-            } else {
-              details.permissionLevel = docs._id;
-              if(permLevel === 'low' && (docs._id === 'low' || docs._id === 'high' || details.isAdministrator)) {
-                command.act(details);
-              } else if (permLevel === 'high' && (docs._id === 'high' || details.isAdministrator)) {
-                command.act(details);
-              }
-            }
-          }).catch(console.log);
-        }
+          }
+        }).catch(console.log);
       }
+       
     }
   }
   /**
