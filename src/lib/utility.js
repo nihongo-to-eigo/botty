@@ -124,6 +124,31 @@ module.exports = (requires) => {
   utilities.filter = (str) => {
     return str.replace('%prefix', config.prefix);
   };
+
+  //for finding the command object for either the keyword or an alias 
+  utilities.getCommand = function(keyword) 
+  { 
+    let commands = info.commands; 
+    //if the command exists, check the permissions. 
+    if(commands[keyword] && typeof commands[keyword].getAction() === 'function') 
+    { 
+      return commands[keyword]; 
+    } 
+    else 
+    { 
+      //didn't find command 
+      for(let index in commands) 
+      { 
+        if(commands[index] && typeof commands[index] === 'object'
+           && commands[index].getAlias().indexOf(keyword) > -1) 
+        { 
+          return commands[index]; 
+        } 
+      } 
+    } 
+    return null; 
+  }; 
+  
   utilities.red = 0xFF0000;
   utilities.green = 0x25bf06;
   return utilities;
