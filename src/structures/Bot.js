@@ -165,8 +165,9 @@ class Bot extends EventEmitter {
     };
     
     // No need to continue if this isn't a command.
-    if(!details.isCommandForm)
+    if(!details.isCommandForm) {
       return;
+    }
     
     if(!details.isDirectMessage) {
       details.serverID = message.channel.guild.id;
@@ -184,7 +185,7 @@ class Bot extends EventEmitter {
 
     let command = utility.getCommand(keyword);
     if(command != null) {
-      processCommand(keyword, details, db);
+      processCommand(command, details, db);
     }
     
     function handleDisabled(details) {
@@ -198,30 +199,14 @@ class Bot extends EventEmitter {
     }
     
     function processCommand(command, details, db) {
-      const permLevel = command.getPerm();
-      if(permLevel === 'public') {
+      const commandLevel = command.getPerm();
+      details.permissionLevel = utility.getPermLevel(details);
+      if(utility.hasPermission(commandLevel, details.permissionLevel)) {
         command.act(details);
-      } else if(permLevel === 'private' && details.isAdministrator) {
-        command.act(details);
-      } else if(permLevel === 'high' || permLevel === 'low') {
-        let roles = details.member ? details.member.roles : [];
-        db.findPerm(details.userID, roles).then(docs => {
-          if(details.isAdministrator) {
-            command.act(details);
-            return;
-          }
-          if(docs != null) {
-            details.permissionLevel = docs._id;
-            if(utility.hasPerm(permLevel, docs._id)) {
-              details.permissionLevel = docs._id;
-              command.act(details);
-            }
-          }
-        }).catch(console.log);
       }
-       
     }
   }
+    
   /**
    * Attempts to reconnect once a disconnect is fired, unless it was a manual disconnect.
    * @param {String} errMsg - Error message.
