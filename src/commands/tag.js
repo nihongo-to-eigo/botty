@@ -10,8 +10,8 @@ module.exports = function command(requires)
     alias: ['t'],
     blurb: 'Retrieves important texts', 
     longDescription: 'Lists tags, or displays the content of a specific tag.', 
-    usages: ['!t ― Shows a list of all available tags',
-             '!t {tag name} ― Retrieves {tag name} '], 
+    usages: ['`!t` ― Shows a list of all available tags',
+             '`!t {tag name}` ― Retrieves {tag name} '], 
     permission: 'public',
     action: function(details)
     {

@@ -44,7 +44,7 @@ module.exports = function command(requires)
           let field = {};
           field.name = `${prefix}${commandName}${aliases}`;
           field.value = command.blurb;
-          field.inline = false; //info.commands[command].inline;
+          field.inline = true; //info.commands[command].inline;
           emb.fields.push(field);
         });
         //seeeeend it once all of the commands are iterated through

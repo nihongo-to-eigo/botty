@@ -10,7 +10,7 @@ module.exports = function command(requires)
     alias: ['j'],
     blurb: 'Looks up word using Jisho API',
     longDescription: 'Searches [Jisho](jisho.org) API for word definitions. Can search with both English and Japanese input, the interpretation of the input is left for jisho. \nBy default this returns the first result only, which may not always be what you want. You can grab results further down the list by adding a number after the word. You can get a list of results by adding `--list`. \nThis is especially useful when searching English words, as often the top result may not be what you actually want',
-    usages: ['`!jisho {word}` ― Returns top result for this word in the dictionary', '`!jisho {word} --list` ― Returns a list of all results from this lookup', '`!j {word} {number}` ― Return {number}th result for this word'],
+    usages: ['`!jisho {word}` ― Returns top result for this word in the dictionary', '`!jisho {word} --list` ― Returns a list of results from this lookup', '`!j {word} {number}` ― Return {number}th result for this word'],
     permission: 'public',
     action: function(details)
     {
