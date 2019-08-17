@@ -9,7 +9,8 @@ module.exports = function command(requires)
     inline: true,
     alias: ['p'],
     blurb: 'Adds a pencil at the end of your nickname',
-    longDescription: 'Adds a pencil emoji to your nickname, indicating you\'d like to have your messages be proactively corrected.', 
+    longDescription: 'Adds a pencil emoji to your nickname, indicating you\'d like to have your messages be proactively corrected.',
+    usages: ['`!p`'],
     permission: 'public',
     action: function(details)
     {
