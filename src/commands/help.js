@@ -10,7 +10,8 @@ module.exports = function command(requires)
     alias: ['?', 'h'],
     blurb: 'See function and usage of each command',
     longDescription: 'See usage details for commands or bring up a list of available commands',
-    usages: ['`!help` ― Shows list of commands with short descriptions', '`!help {command}` ― Shows full help message for a specific command'],
+    usages: ['`!help` ― Shows list of commands with short descriptions',
+             '`!help {command}` ― Shows full help message for a specific command'],
     permission: 'public',
     action: function(details)
     {
@@ -68,9 +69,9 @@ module.exports = function command(requires)
           let fieldIdx = 0;    
           emb.fields[fieldIdx] = {
             name: 'Description:',
-            value: command.longDescription || 'No description'
+            value: command.longDescription
           };
-          if(command.usages) {
+          if(command.usages.length > 0) {
             emb.fields[1] = {
               name: 'Usages:',
               value: command.usages.join('\n')

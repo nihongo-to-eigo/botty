@@ -31,8 +31,8 @@ class Command
     this.name = settings.name;
     this.alias = settings.alias;
     this.blurb = settings.blurb; 
-    this.longDescription = settings.longDescription; 
-    this.usages = settings.usages; 
+    this.longDescription = settings.longDescription || "No description"; 
+    this.usages = settings.usages || []; 
     this.action = settings.action;
     this.bot = requires.bot;
     this.info = requires.info;
