@@ -144,7 +144,7 @@ module.exports = (requires) => {
 
   utilities.getPermLevel = (details) => {
     return new Promise((resolve, reject) => {
-      let db = info.bd;
+      let db = info.db;
       let roles = details.member ? details.member.roles : [];
       if(details.isAdministrator) {
         resolve('private');
