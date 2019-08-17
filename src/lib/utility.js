@@ -160,19 +160,30 @@ module.exports = (requires) => {
     return permLevel;
   };
 
-  utilities.hasPermission = function(commandLevel, userLevel) {
-    // private privilege (administrator) can execute any command
-    // public commands can be executed by anyone
-    if(userLevel === 'private' || commandLevel === 'public') {
+  utilities.hasPermission = (commandLevel, userLevel) => {
+    switch (userLevel) {
+    case 'private':
       return true;
+    case 'high':
+      if(commandLevel != 'private') {
+        return true;
+      }
+      break;
+    case 'low':
+      if(commandLevel === 'low' || commandLevel === 'public'){
+        return true;
+      }
+      break;
+    case 'public':
+      if(commandLevel === 'public') {
+        return true;
+      }
+      break;
     }
-    // now 'high' and 'low' remain
-    // 'high' can execute both 'high' and 'low' commands
-    // commands that are 'low' can be used by both
-    if(userLevel === 'high' || commandLevel === 'low'){
-      return true;
-    }
-    return false;
+    // there is no `default` above, but if somehow `userLevel` is
+    // not one of the expected strings, it'll still fallback here
+    // and default to false
+    return false;    
   };
   
   utilities.red = 0xFF0000;
