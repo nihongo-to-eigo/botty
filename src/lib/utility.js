@@ -126,8 +126,7 @@ module.exports = (requires) => {
   };
 
   //for finding the command object for either the keyword or an alias 
-  utilities.getCommand = function(keyword) 
-  { 
+  utilities.getCommand = (keyword) => { 
     let commands = info.commands;
     if(commands[keyword] && typeof commands[keyword].getAction() === 'function') { 
       return commands[keyword]; 
@@ -143,21 +142,22 @@ module.exports = (requires) => {
     return null; 
   };
 
-  utilities.getPermLevel = function(details) {
-    let db = info.db;
-    let roles = details.member ? details.member.roles : [];
-    let permLevel = 'public';
-    if(details.isAdministrator) {
-      permLevel = 'private';
-    } else {
-      permLevel = db.findPerm(details.userId, roles).then(perm => {
-        if(perm != null) {
-          return perm._id;
-        }
-        return 'public';
-      }).catch(console.log);
-    }
-    return permLevel;
+  utilities.getPermLevel = (details) => {
+    return new Promise((resolve, reject) => {
+      let db = info.bd;
+      let roles = details.member ? details.member.roles : [];
+      if(details.isAdministrator) {
+        resolve('private');
+      } else {
+        db.findPerm(details.userId, roles).then(perm => {
+          if(perm != null) {
+            resolve(perm._id);
+          } else {
+            resolve('public');
+          }
+        }).catch(console.log);
+      }
+    });
   };
 
   utilities.hasPermission = (commandLevel, userLevel) => {

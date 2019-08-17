@@ -200,9 +200,14 @@ class Bot extends EventEmitter {
     
     function processCommand(command, details, db) {
       const commandLevel = command.getPerm();
-      details.permissionLevel = utility.getPermLevel(details);
-      if(utility.hasPermission(commandLevel, details.permissionLevel)) {
+      if (commandLevel === 'public') {
         command.act(details);
+      } else {
+        utility.getPermLevel(details).then((userLevel) => {
+          if(utility.hasPermission(commandLevel, userLevel)) {
+            command.act(details);
+          }
+        }).catch(console.log);
       }
     }
   }
