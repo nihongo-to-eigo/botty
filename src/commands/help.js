@@ -22,20 +22,18 @@ module.exports = function command(requires)
       emb.title = 'Help';
       emb.description = "You can DM the bot :heart:";
       
-      const listCommands = function()
+      const listCommands = function(userLevel)
       {        
         emb.title = 'Help';
         emb.blurb = "You can DM the bot :heart:";
         Object.keys(info.commands).forEach((commandName,index) => {
           let command = info.commands[commandName];
-          let commandLevel = command.getPerm();
-          // details.permissionLevel should have the user's permission level
-          // see bot.js `processCommand`         
-          if(!utility.hasPermission(commandLevel, details.permissionLevel)) {
+          let commandLevel = command.getPerm();                
+          if(!utility.hasPermission(commandLevel, userLevel)) {
             return;
           }
           //create the entry in the embed
-          let prefix = info.config.prefix;
+          const prefix = info.config.prefix;
           let aliases = '';
           if(command.getAlias()){
             let separator = ', ' + prefix;
@@ -53,11 +51,11 @@ module.exports = function command(requires)
         });     
       };
       
-      const sendDetails = function(commandName)
+      const sendDetails = function(commandName, userLevel)
       {
         let command = utility.getCommand(commandName);
         if(command == null
-           || !utility.hasPermission(command.getPerm(), details.permissionLevel)) {
+           || !utility.hasPermission(command.getPerm(), userLevel)) {
           bot.createMessage(details.channelID, {
             embed: {
               title: 'No Such Command',
@@ -83,12 +81,15 @@ module.exports = function command(requires)
           });
         }
       };
+      
+      utility.getPermLevel(details).then((userLevel) => {        
+        if(details.input === '') {
+          listCommands(userLevel);
+        } else {
+          sendDetails(details.input, userLevel);
+        }      
+      }).catch(console.log);
 
-      if(details.input === '') {
-        listCommands();
-      } else {
-        sendDetails(details.input);
-      }      
     }
   }, requires);
 };
