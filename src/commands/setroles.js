@@ -10,7 +10,7 @@ module.exports = function command(requires)
     alias: ['sr'],
     blurb: 'Sets available user roles for self-assignment.', 
     longDescription: 'Given a role name, makes it self-assignable. Using it with a role that is already set, will make it no longer be self-assignable.', 
-    usages: ['!sr {role name} ― Toggles whether role is self-assignable'], 
+    usages: ['`%prefixsr {role name}` ― Toggles whether role is self-assignable'], 
     permission: 'high',
     action: function(details)
     {

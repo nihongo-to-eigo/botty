@@ -10,7 +10,7 @@ module.exports = function command(requires)
     alias: ['so'],
     blurb: 'Shows the stroke order of a kanji (animated)',
     longDescription: 'Shows animated stroke order image of given kanji. Also works on kana and some other miscellaneous Japanese characters.',
-    usages: ['`!so {kanji}` ― Returns stroke order of {kanji}.'],
+    usages: ['`%prefixso {kanji}` ― Returns stroke order of {kanji}.'],
     permission: 'public',
     action: function(details)
     {

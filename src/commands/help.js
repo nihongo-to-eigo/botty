@@ -10,8 +10,8 @@ module.exports = function command(requires)
     alias: ['?', 'h'],
     blurb: 'See function and usage of each command',
     longDescription: 'See usage details for commands or bring up a list of available commands',
-    usages: ['`!help` ― Shows list of commands with short descriptions',
-             '`!help {command}` ― Shows full help message for a specific command'],
+    usages: ['`%prefixhelp` ― Shows list of commands with short descriptions',
+             '`%prefixhelp {command}` ― Shows full help message for a specific command'],
     permission: 'public',
     action: function(details)
     {
@@ -72,9 +72,10 @@ module.exports = function command(requires)
             value: command.longDescription
           };
           if(command.usages.length > 0) {
+            const filteredUsages = command.usages.map(usage => utility.filter(usage));
             emb.fields[1] = {
               name: 'Usages:',
-              value: command.usages.join('\n')
+              value: filteredUsages.join('\n')
             };            
           }
           bot.createMessage(details.channelID, {

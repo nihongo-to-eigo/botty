@@ -9,7 +9,7 @@ module.exports = function command(requires)
     inline: true,
     alias: ['m'],
     blurb: 'Mutes people.',
-    usages: ['`!m {user} {time} {reason}`'],
+    usages: ['`%prefixm {user} {time} {reason}`'],
     permission: 'low',
     action: function(details)
     {

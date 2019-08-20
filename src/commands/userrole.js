@@ -9,8 +9,8 @@ module.exports = function command(requires)
     inline: true,
     alias: ['ur'],
     blurb: 'Lists roles, or assigns/removes the role searched for',
-    usages: ['`!ur ― List self-assignable roles',
-             '`!ur {role} ― Gives you the role, or removes it if you already have it.`'],
+    usages: ['`%prefixur` ― List self-assignable roles',
+             '`%prefixur {role}` ― Gives you the role, or removes it if you already have it.'],
     permission: 'public',
     action: function(details)
     {

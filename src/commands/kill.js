@@ -10,7 +10,7 @@ module.exports = function command(requires)
     alias: ['ki'],
     blurb: 'Kills the bot', 
     longDescription: 'Sometimes you just gotta do it ┐(´д｀)┌', 
-    usages: ['!kill'], 
+    usages: ['`%prefixkill`'], 
     permission: 'private',
     action: function(details)
     {

@@ -10,7 +10,7 @@ module.exports = function command(requires)
     alias: ['s'],
     blurb: 'Returns stats on the bot.', 
     longDescription: 'Gets basic info such as uptime.', 
-    usages: ['`!stats`'], 
+    usages: ['`%prefixstats`'], 
     permission: 'public',
     action: function(details)
     {

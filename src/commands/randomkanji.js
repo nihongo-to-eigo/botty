@@ -9,7 +9,7 @@ module.exports = function command(requires)
     inline: true,
     alias: ['rk'],
     blurb: 'Gets info on random kanji.',
-    usages: ['`!rk`'],
+    usages: ['`%prefixrk`'],
     permission: 'public',
     action: function(details)
     {
