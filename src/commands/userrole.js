@@ -8,7 +8,9 @@ module.exports = function command(requires)
     name: 'User Role',
     inline: true,
     alias: ['ur'],
-    description: 'Lists roles, or assigns/removes the role searched for',
+    blurb: 'Lists roles, or assigns/removes the role searched for',
+    usages: ['`!ur ― List self-assignable roles',
+             '`!ur {role} ― Gives you the role, or removes it if you already have it.`'],
     permission: 'public',
     action: function(details)
     {
@@ -19,11 +21,11 @@ module.exports = function command(requires)
       if(details.input === "")
       {
         info.db.listRoles().then((roleNames) => {
-          let emb = {};
-          emb.title = 'User selectable roles.'
+          let emb = {}; 
+          emb.title = 'User selectable roles.';
           emb.description = roleNames.join('\n');
           bot.createMessage(details.channelID, {embed: emb});
-        })
+        });
       }
       else
       {
@@ -41,8 +43,8 @@ module.exports = function command(requires)
             else
             {
               //if they don't already have the role, give it to them.
-              let memberRoles = bot.guilds.get(details.serverID).members.get(details.userID).roles
-              let roleSearch = memberRoles.find(memberRole => memberRole === roleID)
+              let memberRoles = bot.guilds.get(details.serverID).members.get(details.userID).roles;
+              let roleSearch = memberRoles.find(memberRole => memberRole === roleID);
               if(roleSearch === undefined)
               {
                 bot.guilds.get(details.serverID).members.get(details.userID).addRole(roleID).then((result) =>

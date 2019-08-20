@@ -124,6 +124,68 @@ module.exports = (requires) => {
   utilities.filter = (str) => {
     return str.replace('%prefix', config.prefix);
   };
+
+  //for finding the command object for either the keyword or an alias 
+  utilities.getCommand = (keyword) => { 
+    let commands = info.commands;
+    if(commands[keyword] && typeof commands[keyword].getAction() === 'function') { 
+      return commands[keyword]; 
+    } else { 
+      //didn't find command 
+      for(let index in commands) { 
+        if(commands[index] && typeof commands[index] === 'object'
+           && commands[index].getAlias().indexOf(keyword) > -1) { 
+          return commands[index]; 
+        } 
+      } 
+    } 
+    return null; 
+  };
+
+  utilities.getPermLevel = (details) => {
+    return new Promise((resolve, reject) => {
+      let db = info.db;
+      let roles = details.member ? details.member.roles : [];
+      if(details.isAdministrator) {
+        resolve('private');
+      } else {
+        db.findPerm(details.userId, roles).then(perm => {
+          if(perm != null) {
+            resolve(perm._id);
+          } else {
+            resolve('public');
+          }
+        }).catch(console.log);
+      }
+    });
+  };
+
+  utilities.hasPermission = (commandLevel, userLevel) => {
+    switch (userLevel) {
+    case 'private':
+      return true;
+    case 'high':
+      if(commandLevel != 'private') {
+        return true;
+      }
+      break;
+    case 'low':
+      if(commandLevel === 'low' || commandLevel === 'public'){
+        return true;
+      }
+      break;
+    case 'public':
+      if(commandLevel === 'public') {
+        return true;
+      }
+      break;
+    }
+    // there is no `default` above, but if somehow `userLevel` is
+    // not one of the expected strings, it'll still fallback here
+    // and default to false
+    return false;    
+  };
+  
   utilities.red = 0xFF0000;
   utilities.green = 0x25bf06;
   return utilities;

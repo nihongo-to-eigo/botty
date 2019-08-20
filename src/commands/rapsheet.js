@@ -8,7 +8,7 @@ module.exports = function command(requires)
     name: 'Rapsheet',
     inline: true,
     alias: ['rs'],
-    description: 'Get\'s a user\'s infractions.',
+    blurb: 'Get\'s a user\'s infractions.',
     permission: 'low',
     action: function(details)
     {

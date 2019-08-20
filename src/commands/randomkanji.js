@@ -8,7 +8,8 @@ module.exports = function command(requires)
     name: 'Random Kanji',
     inline: true,
     alias: ['rk'],
-    description: 'Gets info on random kanji.',
+    blurb: 'Gets info on random kanji.',
+    usages: ['`!rk`'],
     permission: 'public',
     action: function(details)
     {
