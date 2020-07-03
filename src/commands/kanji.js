@@ -27,12 +27,23 @@ module.exports = function command(requires)
           }); 
         }).catch((err) =>
         {
-          bot.createMessage(details.channelID, {
-            embed: {
-              title: 'Error',
-              description: JSON.stringify(err)
-            }
-          });
+          if(err.statusCode === 204) {
+            bot.createMessage(details.channelID, {
+              embed: {
+                title: 'Error',
+                description: 'No content found, please make sure you only use one kanji at a time. Also, try to not have extra whitespace or spaces.',
+                color: info.utility.red
+              }
+            })
+          } else {
+            bot.createMessage(details.channelID, {
+              embed: {
+                title: 'Error',
+                description: 'An error occurred, if it persists please contact CyberRonin!'
+              }
+            });
+          }
+
         });
       };
 
