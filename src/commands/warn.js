@@ -8,7 +8,7 @@ module.exports = function command(requires)
     name: 'Warn',
     inline: true,
     alias: ['w'],
-    description: 'Warns people.',
+    blurb: 'Warns people.',
     permission: 'low',
     action: function(details)
     {

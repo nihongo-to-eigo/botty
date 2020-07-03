@@ -8,7 +8,9 @@ module.exports = function command(requires)
     name: 'Set Roles',
     inline: true,
     alias: ['sr'],
-    description: 'Sets available user roles.',
+    blurb: 'Sets available user roles for self-assignment.', 
+    longDescription: 'Given a role name, makes it self-assignable. Using it with a role that is already set, will make it no longer be self-assignable.', 
+    usages: ['`%prefixsr {role name}` ― Toggles whether role is self-assignable'], 
     permission: 'high',
     action: function(details)
     {
@@ -35,15 +37,15 @@ module.exports = function command(requires)
               info.db.removeRoleByID(roleID).then((numRemoved) => {
                 let remEmb = {};
                 remEmb.title = 'Removed';
-                remEmb.description = `You have removed the __${details.input}__ role for the user selectable roles`;
+                remEmb.description = `You have removed the __${details.input}__ role from the user selectable roles`;
                 remEmb.color = info.utility.red;
                 bot.createMessage(details.channelID, {embed: remEmb});
               }).catch((err) => {
                 console.log(err);
-              })
+              });
             }
             console.log(err.errorType);
-          })
+          });
         }).catch((err) =>
         {
           console.log(err);

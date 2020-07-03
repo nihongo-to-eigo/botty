@@ -8,7 +8,9 @@ module.exports = function command(requires)
     name: 'Kanji',
     inline: true,
     alias: ['k'],
-    description: '<kanji> , Looks up kanji information.',
+    blurb: 'Looks up kanji information.',
+    longDescription: 'Retrieves kanji data from kanjidic2. \n Gets info such as kanji meaning, readings, radical, composing elements, and JLPT level.',
+    usages: ['`%prefixkanji {kanji}` ― Returns info on {kanji}'],
     permission: 'public',
     action: function(details)
     {
@@ -25,16 +27,27 @@ module.exports = function command(requires)
           }); 
         }).catch((err) =>
         {
-          bot.createMessage(details.channelID, {
-            embed: {
-              title: 'Error',
-              description: JSON.stringify(err)
-            }
-          });
+          if(err.statusCode === 204) {
+            bot.createMessage(details.channelID, {
+              embed: {
+                title: 'Error',
+                description: 'No content found, please make sure you only use one kanji at a time. Also, try to not have extra whitespace or spaces.',
+                color: info.utility.red
+              }
+            })
+          } else {
+            bot.createMessage(details.channelID, {
+              embed: {
+                title: 'Error',
+                description: 'An error occurred, if it persists please contact CyberRonin!'
+              }
+            });
+          }
+
         });
       };
 
-      if(details.input === "") {return;}
+      if(details.input === '') {return;}
       else
       {
         searchKanji(details.args[1]);

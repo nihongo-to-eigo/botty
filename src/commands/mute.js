@@ -8,7 +8,8 @@ module.exports = function command(requires)
     name: 'Mute',
     inline: true,
     alias: ['m'],
-    description: 'Mutes people.',
+    blurb: 'Mutes people.',
+    usages: ['`%prefixm {user} {time} {reason}`'],
     permission: 'low',
     action: function(details)
     {

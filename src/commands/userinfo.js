@@ -8,7 +8,10 @@ module.exports = function command(requires)
     name: 'User Info',
     inline: false,
     alias: ['ui'],
-    description: '[<mention user>]Gets information for a user that is mentioned, or the person that used the command. If there is no mention, then it will get the information of the person who used the command.',
+    blurb: 'Gets info on a user',
+    longDescription: 'Shows account creation date and server join date for a user. Without a specified user mentioned, gets info on the person who used the command.',
+    usages: ['`%prefixui` ― Gets info on sender',
+             '`%prefixui {user}` ― Gets info on specified user.'],
     permission: 'public',
     action: function(details)
     {

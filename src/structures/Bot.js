@@ -165,8 +165,9 @@ class Bot extends EventEmitter {
     };
     
     // No need to continue if this isn't a command.
-    if(!details.isCommandForm)
+    if(!details.isCommandForm) {
       return;
+    }
     
     if(!details.isDirectMessage) {
       details.serverID = message.channel.guild.id;
@@ -177,21 +178,14 @@ class Bot extends EventEmitter {
     let cmd = utility.stripPrefix(details.message);
     let keyword = cmd.split(' ')[0];
     details.input = cmd.replace(keyword, '').trim();
-
+    
     //split up the remaining into something similar to command line args
     details.args = cmd.split(' ');
     keyword = keyword.toLowerCase();
-    
-    //if the command exists, check the permissions.
-    if(commands[keyword] && typeof commands[keyword].getAction() === 'function') {
-      processCommand(keyword, details, db);
-    } else {
-      //didn't find command
-      for(let index in commands) {
-        if(commands[index] && typeof commands[index] === 'object' && commands[index].getAlias().indexOf(keyword) > -1) {
-          processCommand(index, details, db);
-        }
-      }
+
+    let command = utility.getCommand(keyword);
+    if(command != null) {
+      processCommand(command, details, db);
     }
     
     function handleDisabled(details) {
@@ -203,49 +197,21 @@ class Bot extends EventEmitter {
         }
       });
     }
+    
     function processCommand(command, details, db) {
-      const permLevel = commands[command].getPerm();
-      if(permLevel === 'public') {
-        commands[command].act(details);
-      } else if(permLevel === 'private' && details.isAdministrator) {
-        commands[command].act(details);
-      } else if(permLevel === 'high' || permLevel === 'low') {
-        if(!details.member) {
-          db.findPerm(details.userID, []).then(docs => {
-            if(docs === null) {
-              if(details.isAdministrator) {
-                commands[command].act(details);
-              }
-              return;
-            } else {
-              details.permissionLevel = docs._id;
-              if(permLevel === 'low' && (docs._id === 'low' || docs._id === 'high' || details.isAdministrator)) {
-                commands[command].act(details);
-              } else if (permLevel === 'high' && (docs._id === 'high' || details.isAdministrator)) {
-                commands[command].act(details);
-              }
-            }
-          }).catch(console.log)
-        } else {
-          db.findPerm(details.userID, details.member.roles).then(docs => {
-            if(docs === null) {
-              if(details.isAdministrator) {
-                commands[command].act(details);
-              }
-              return;
-            } else {
-              details.permissionLevel = docs._id;
-              if(permLevel === 'low' && (docs._id === 'low' || docs._id === 'high' || details.isAdministrator)) {
-                commands[command].act(details);
-              } else if (permLevel === 'high' && (docs._id === 'high' || details.isAdministrator)) {
-                commands[command].act(details);
-              }
-            }
-          }).catch(console.log)
-        }
+      const commandLevel = command.getPerm();
+      if (commandLevel === 'public') {
+        command.act(details);
+      } else {
+        utility.getPermLevel(details).then((userLevel) => {
+          if(utility.hasPermission(commandLevel, userLevel)) {
+            command.act(details);
+          }
+        }).catch(console.log);
       }
     }
   }
+    
   /**
    * Attempts to reconnect once a disconnect is fired, unless it was a manual disconnect.
    * @param {String} errMsg - Error message.
