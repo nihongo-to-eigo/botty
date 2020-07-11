@@ -15,7 +15,6 @@ module.exports = function command(requires)
       const bot = requires.bot;
       const info = requires.info;
       const userFeather = info.utility.useSource('user');
-
       function processInfractions(infractions) {
         const len = infractions.length;
         const lastFive = len - 5;

@@ -9,6 +9,7 @@ module.exports = function command(requires)
     inline: true,
     alias: ['m'],
     blurb: 'Mutes people.',
+    longDescription: 'Mutes a user for a specific amount of time. Allowed times are (m - minutes, h - hours, d - days)',
     usages: ['`%prefixm {user} {time} {reason}`'],
     permission: 'low',
     action: function(details)
@@ -35,15 +36,12 @@ module.exports = function command(requires)
               switch(test[1]) {
                 case 'm':
                   muteEnd.setMinutes(muteEnd.getMinutes() + amount);
-                  console.log(muteEnd, userTest);
                   break;
                 case 'h':
                   muteEnd.setHours(muteEnd.getHours() + amount);
-                  console.log(muteEnd, userTest);
                   break;
                 case 'd':
                 muteEnd.setDate(muteEnd.getDate() + amount);
-                  console.log(muteEnd, userTest);
                   break;
               }
               info.db.addTimer(userTest, 'mute', muteEnd);
@@ -51,7 +49,12 @@ module.exports = function command(requires)
               const mutedUser = bot.guilds.get(info.settings.home_server_id).members.get(userTest);
               if(mutedUser !== undefined) {
                 bot.createMessage(details.channelID, {content: `User will be muted until ${muteEnd.toUTCString()}`});
-                bot.createMessage(info.settings.private_log_channel, {embed: {title: 'Log', fields: [{name: 'User', value: details.args[1]}, {name: 'Action', value: 'mute'} , {name: 'Length', value: test[0]}, {name: 'Reason', value: details.input.replace(idAndTime, '')}, {name: 'Responsible Mod', value: `<@${details.userID}>`}]}});
+                bot.createMessage(info.settings.private_log_channel, {embed: {title: 'Log', fields: [{name: 'User', value: details.args[1]},
+                {name: 'Action', value: 'mute'},
+                {name: 'Length', value: test[0]},
+                {name: 'Reason', value: details.input.replace(idAndTime, '')},
+                {name: 'Message Link', value: details.link},
+                {name: 'Responsible Mod', value: `<@${details.userID}>`}]}});
                 mutedUser.addRole(info.settings.mute_role_id, details.input.replace(idAndTime, ''));
               }
               
