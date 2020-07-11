@@ -81,8 +81,6 @@ module.exports = function command(requires)
       {
         let patt = /[1-9][0-9]*$/g;
         let num = parseInt(patt.exec(details.input),10);
-        console.log('Num is ' + num + ' details is ' + details.input);
-        console.log('Searching for ' + details.input.replace(/\s[1-9][0-9]*/g, ''));
         searchJisho(details.input.replace(/\s[1-9][0-9]*/g, ''),num - 1);
         return;
       }

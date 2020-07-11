@@ -25,12 +25,10 @@ module.exports = (requires) => {
   }
   handler.processTick = () => {
     const now = new Date;
-    //console.log('tick');
     info.db.findPassed(now).then(passedTimers => {
       processPassed(passedTimers);
       // do something, then delet passed Timers
       info.db.removePassed(now).then(numRemoved => {
-        //console.log(numRemoved);
       }).catch(console.log);
     }).catch(console.log);
   };
