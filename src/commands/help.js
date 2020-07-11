@@ -65,18 +65,20 @@ module.exports = function command(requires)
           });
         } else {
           emb.title = 'Info: ' + command.name;
-          emb.description = command.blurb;
-          let fieldIdx = 0;    
-          emb.fields[fieldIdx] = {
+          emb.description = command.blurb; 
+          emb.fields[0] = {
             name: 'Description:',
             value: command.longDescription
           };
+          if(command.alias.length > 0) {
+            emb.fields.push({name: 'Aliases',
+              value: command.alias.join(', ')});
+          }
           if(command.usages.length > 0) {
             const filteredUsages = command.usages.map(usage => utility.filter(usage));
-            emb.fields[1] = {
+            emb.fields.push({
               name: 'Usages:',
-              value: filteredUsages.join('\n')
-            };            
+              value: filteredUsages.join('\n')});            
           }
           bot.createMessage(details.channelID, {
             embed: emb
