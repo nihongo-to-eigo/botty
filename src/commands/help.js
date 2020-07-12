@@ -21,12 +21,10 @@ module.exports = function command(requires)
       let emb = {};
       emb.fields = [];
       emb.title = 'Help';
-      emb.description = "You can DM the bot :heart:";
+      emb.description = utility.filter("You can DM the bot :heart:\nUse `%prefixhelp {command}` to get more detailed information about a command.");
       
       const listCommands = function(userLevel)
-      {        
-        emb.title = 'Help';
-        emb.blurb = "You can DM the bot :heart:";
+      {
         Object.keys(info.commands).forEach((commandName,index) => {
           let command = info.commands[commandName];
           let commandLevel = command.getPerm();                
@@ -49,7 +47,7 @@ module.exports = function command(requires)
         //seeeeend it once all of the commands are iterated through
         bot.createMessage(details.channelID, {
           embed: emb
-        });     
+        });
       };
       
       const sendDetails = function(commandName, userLevel)
@@ -61,7 +59,7 @@ module.exports = function command(requires)
             embed: {
               title: 'No Such Command',
               description: 'Command could not be found or you do not have permission to use this command'
-            }            
+            }
           });
         } else {
           emb.title = 'Info: ' + command.name;
@@ -78,7 +76,7 @@ module.exports = function command(requires)
             const filteredUsages = command.usages.map(usage => utility.filter(usage));
             emb.fields.push({
               name: 'Usages:',
-              value: filteredUsages.join('\n')});            
+              value: filteredUsages.join('\n')});
           }
           bot.createMessage(details.channelID, {
             embed: emb
@@ -86,7 +84,7 @@ module.exports = function command(requires)
         }
       };
       
-      utility.getPermLevel(details).then((userLevel) => {        
+      utility.getPermLevel(details).then((userLevel) => {
         if(details.input === '') {
           listCommands(userLevel);
         } else {
