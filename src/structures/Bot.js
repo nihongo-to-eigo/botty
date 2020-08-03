@@ -159,7 +159,7 @@ class Bot extends EventEmitter {
       author: message.author,
       channelID: message.channel.id,
       message: message.content,
-      link: `https://discordapp.com/channels/${message.channel.guild.id || ''}/${message.channel.id}/${message.id}`,
+      link: message.channel.guild ? `https://discordapp.com/channels/${message.channel.guild.id || ''}/${message.channel.id}/${message.id}` : '',
       isDirectMessage: bot.privateChannels.get(message.channel.id) !== undefined ? true : false,
       isCommandForm: utility.isCommandForm(message.content),
       isAdministrator: utility.isAdministrator(message.author.id)
