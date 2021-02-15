@@ -250,6 +250,16 @@ module.exports = function utility(requires) {
       });
     });
   }
+  db.countTimers = (type) => {
+    return new Promise((resolve, reject) => {
+      db.timers.count({type}, (err, docs) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(docs);
+      })
+    })
+  };
   db.getUserTimer = (userID) => {
     return new Promise((resolve, reject) => {
       db.timers.find({ userID }, (err, docs) => {
@@ -299,7 +309,7 @@ module.exports = function utility(requires) {
     });
   }
   /**
-   * DB setup for infractions
+   * DB setup for settings
    */
   db.settings = new Datastore('./src/lib/databases/settings.db');
   db.settings.loadDatabase();
@@ -335,5 +345,45 @@ module.exports = function utility(requires) {
       })
     })
   }
+
+  /**
+   * DB setup for reading squad
+   */
+  db.readingSquad = new Datastore('./src/lib/databases/readingSquad.db');
+  db.readingSquad.loadDatabase();
+  db.readingSquad.ensureIndex({ fieldName: 'userID', unique: true });
+  //autocompaction every 10 minutes: _id is the user id
+  db.readingSquad.persistence.setAutocompactionInterval(600000);
+  db.addToReadingSquad = (userID) => {
+    return new Promise((resolve, reject) => {
+      db.readingSquad.insert({userID}, (err, docs) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(docs);
+      });
+    });
+  }
+  db.listApprovedReadingSquad = () => {
+    return new Promise((resolve, reject) => {
+      db.readingSquad.find({}, (err, docs) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(docs.map(x => x.userID));
+      });
+    });
+  }
+  db.clearReadingSquad = () => {
+    return new Promise((resolve, reject) => {
+      db.readingSquad.remove({}, { multi: true }, (err, docs) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(docs);
+      });
+    });
+  }
+
   return db;
 };

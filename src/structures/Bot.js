@@ -118,6 +118,10 @@ class Bot extends EventEmitter {
     if(this.debug) {
       bot.on('debug', this.onDebug.bind(this));
     }
+    if (this.config.reading_role && this.config.reading_reports_channel) {
+      bot.on('messageReactionAdd', this.onReadingReportReaction.bind(this));
+    }
+
     bot.on('guildDelete', (server) => {
       console.log(`Left ${server}`);
     });
@@ -224,6 +228,31 @@ class Bot extends EventEmitter {
       console.log('Kill command used.');
       process.exit(0);
     }
+  }
+
+  /**
+   * Handles reactions in the reading report channel
+   * @param {*} message The message that was reacted to
+   * @param {*} emoji The that was used as a reaction
+   */
+  onReadingReportReaction(message, emoji) {
+    //  only process reactions in the reading reports channel
+    if (message.channel.id !== this.config.reading_reports_channel)
+      return;
+
+    //  only process the checkmark emoji
+    if (emoji.name !== '✅')
+      return;
+
+    const utility = this.requires.utility;
+    this.client.getMessage(message.channel.id, message.id).then(fullMessage => {
+      const checks = fullMessage.reactions['✅'] || { count: 0};
+      if (checks.count != 1)
+        return; //  only take action the first time somebody reacts
+      
+      const readingSquad = utility.useSource('readingSquad');
+      readingSquad.approve(fullMessage.member);
+    });
   }
   /**
    * Handles debug events for the lib/bot itself.

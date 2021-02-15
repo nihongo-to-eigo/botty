@@ -188,5 +188,6 @@ module.exports = (requires) => {
   
   utilities.red = 0xFF0000;
   utilities.green = 0x25bf06;
+  utilities.readingSquadCoolBlue = 0x0CCDD3
   return utilities;
 };

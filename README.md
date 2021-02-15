@@ -8,7 +8,9 @@
  node start.js
  ```
 
-You can just create an empty feathers.json file in the root of the project.
+ If using VSCode, just open the project root and press F5
+
+You can just create an empty feathers.json file in the root of the project and it will be populated automatically.
 
 Here is an example `config.json` file as well:
 ```
@@ -22,6 +24,8 @@ Here is an example `config.json` file as well:
   "log_channel":"",
   "voice_channel": "",
   "voice_channel_chat": "",
+  "reading_role": "",
+  "reading_reports_channel": "",
   "api": {
     "discord_token": "<bot token>"
   }
