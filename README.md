@@ -8,8 +8,6 @@
  node start.js
  ```
 
- If using VSCode, just open the project root and press F5
-
 You can just create an empty feathers.json file in the root of the project and it will be populated automatically.
 
 Here is an example `config.json` file as well:
