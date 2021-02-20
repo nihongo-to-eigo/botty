@@ -26,4 +26,4 @@ Create a `config.json` file based off of this example:
 ```
 
 ## Other Considerations
- * [Permissions]('./documentation/Permissions.md)
+ * [Permissions](/documentation/Permissions.md)
