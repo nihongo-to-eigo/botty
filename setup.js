@@ -7,7 +7,7 @@ const rl = readline.createInterface({
 });
 
 // set up permissions DB
-const permDB = new Datastore('./permissions.db');
+const permDB = new Datastore('./src/lib/databases/permissions.db');
 permDB.loadDatabase();
 
 /**
@@ -50,7 +50,7 @@ function addLowPerm() {
 };
 
 // set up settings DB
-const settingsDB = new Datastore('./settings.db');
+const settingsDB = new Datastore('./src/lib/databases/settings.db');
 settingsDB.loadDatabase();
 
 /**

@@ -25,5 +25,11 @@ Create a `config.json` file based off of this example:
 }
 ```
 
-## Other Considerations
- * [Permissions](/documentation/Permissions.md)
+# Features
+ * Clock system to use for timed events
+   * Currently is used for timed mutes
+ * [Permission system](/documentation/Permissions.md)
+ * Ability to add functions to run when the bot is ready [Docs](/documentation/FunctionInjection.md)
+ * [Infraction system](/documentation/InfractionSystem.md)
+ * Light DB using `nedb`
+   * The DB stores permissions, roles for auto-roles, tags, infractions

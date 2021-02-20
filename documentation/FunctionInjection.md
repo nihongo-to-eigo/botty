@@ -1,0 +1,2 @@
+# Summary
+The file `src/lib/onReady.js` has a function that runs when the bot is ready, called `ready`. You can add functions to that file and in the `ready` function to run when the bot is ready. This will be useful when you want to add any kind of event listeners or functionality to the bot without modifying `Bot.js`.

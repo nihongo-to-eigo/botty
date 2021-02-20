@@ -11,7 +11,7 @@ The levels are:
 This setting is still a remnant of the old config file that was being used when the bot was first set up. For this one, you just have to add your user ID to the `administrators` array in `config.json`
 
 ## Setting Permission Levels
- For setting up `high` and `low` in the Db, you'll have to use the setup script.
+ For setting up `high` and `low` in the DB, you'll have to use the setup script.
 
 Make sure you ran the `setup.js` file before using the `setperms` command.
 
