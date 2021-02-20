@@ -1,16 +1,16 @@
 # Requirements
- - Node.js > v8
+ * Node.js LTS
 
- You just need to do:
-
+## First Time Instructions
+ **Make sure you have Discord open so you can copy the necessary IDs from Discord when running `node setup.js`**
  ```
  npm i
- node start.js
+ node setup.js
  ```
 
-You can just create an empty feathers.json file in the root of the project.
+You can just create an empty `feathers.json` file in the root of the project.
 
-Here is an example `config.json` file as well:
+Create a `config.json` file based off of this example:
 ```
 {
   "prefix": "[",
@@ -19,11 +19,11 @@ Here is an example `config.json` file as well:
   "administrators": [
       "ID of ADMIN"
   ],
-  "log_channel":"",
-  "voice_channel": "",
-  "voice_channel_chat": "",
   "api": {
     "discord_token": "<bot token>"
   }
 }
 ```
+
+## Other Considerations
+ * [Permissions]('./documentation/Permissions.md)

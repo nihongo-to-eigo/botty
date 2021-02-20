@@ -133,6 +133,7 @@ class Bot extends EventEmitter {
     let utility = this.requires.utility;
     let config = this.config;
     console.log(`${bot.user.username}: ${bot.user.id}`);
+    this.requires.onReady();
     bot.editStatus('online',{
       name : utility.filter(config.playing),
       type: 0
