@@ -7,7 +7,7 @@ module.exports = function feather(requires)
   const feather = {};
   
   //requires
-  const { bot, info } = requires;
+  const {bot, info} = requires;
   let squadRole, reportsChannel;
 
   //feather functions
@@ -25,7 +25,7 @@ module.exports = function feather(requires)
           feather.setUpcomingDeadline();
       });
     }
-  }
+  };
 
   feather.reset = function() {
     postResetMessage()
@@ -33,7 +33,7 @@ module.exports = function feather(requires)
       .then(expiredMembers => clearRoles(expiredMembers))
       .then(() => info.db.clearReadingSquad())
       .then(() => feather.setUpcomingDeadline());
-  }
+  };
 
   feather.approve = function(member) {
     if (member) {
@@ -42,20 +42,22 @@ module.exports = function feather(requires)
       }
       info.db.addToReadingSquad(member.id);
     }
-  }
+  };
 
   feather.setUpcomingDeadline = function() {
     const deadline = getUpcomingDeadline();
     info.db.addTimer(null, 'reading', deadline);
     return deadline;
-  }
+  };
 
   //helper functions
   function postResetMessage() {
-    return bot.createMessage(reportsChannel, {embed: {
-      title: 'It is now Tuesday 00:00 JST (Monday 15:00 UTC), which means a new week has started.',
-      description: `Anyone who posted a report last week that doesn't post a new report until the same time next week will lose the Reading Squad 🔥🔥 role.\n\nRoles will be cleared from people who didn't post a report last week now.`,
-      color: info.utility.readingSquadCoolBlue }
+    return bot.createMessage(reportsChannel, {
+      embed: {
+        title: 'It is now Tuesday 00:00 JST (Monday 15:00 UTC), which means a new week has started.',
+        description: 'Anyone who posted a report last week that doesn\'t post a new report until the same time next week will lose the Reading Squad 🔥🔥 role.\n\nRoles will be cleared from people who didn\'t post a report last week now.',
+        color: info.utility.readingSquadCoolBlue
+      }
     });
   }
 
@@ -73,7 +75,7 @@ module.exports = function feather(requires)
   function clearRoles(expiredMembers) {
     //  remove roles from people who didn't post a report
     for (const member of expiredMembers) {
-        member.removeRole(squadRole, 'Reading report expired');
+      member.removeRole(squadRole, 'Reading report expired');
     }
   }
 
@@ -86,7 +88,7 @@ module.exports = function feather(requires)
     deadline.setUTCMinutes(0);
     deadline.setUTCSeconds(0);
     deadline.setUTCMilliseconds(0);
-    deadline.setUTCDate(deadline.getUTCDate() + (7 - (deadline.getUTCDay() - 1))) //  upcoming Monday
+    deadline.setUTCDate(deadline.getUTCDate() + (7 - (deadline.getUTCDay() - 1))); //  upcoming Monday
     return deadline;
   }
 
@@ -105,7 +107,7 @@ module.exports = function feather(requires)
       return;
 
     bot.getMessage(message.channel.id, message.id).then(fullMessage => {
-      const checks = fullMessage.reactions['✅'] || { count: 0 };
+      const checks = fullMessage.reactions['✅'] || {count: 0};
       if (checks.count != 1)
         return; //  only take action the first time somebody reacts
       

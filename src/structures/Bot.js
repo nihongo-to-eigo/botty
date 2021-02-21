@@ -33,9 +33,7 @@ class Bot extends EventEmitter {
     this.debug = settings.debug || false;
     this.shard = settings.shard || false;
     this.forked = settings.forked || false;
-    this.client = new Client(this.config.api.discord_token, {
-      getAllUsers: true
-    });
+    this.client = new Client(this.config.api.discord_token, {getAllUsers: true});
 
     //other members
     this.startTime = new Date();
@@ -107,8 +105,8 @@ class Bot extends EventEmitter {
    */
   start() {
     let bot = this.client;
-    const { clock } = this;
-    const { handleTimer, handleJoin } = this.requires;
+    const {clock} = this;
+    const {handleTimer, handleJoin} = this.requires;
 
     //let's not let the functions go crazy and bind themselves to this.client
     bot.on('ready', this.onReady.bind(this));
@@ -151,10 +149,7 @@ class Bot extends EventEmitter {
    */
   onMessage(message) {
     let bot = this.client;
-    let commands = this.requires.commands;
-    let privates = this.requires.privates;
     let utility = this.requires.utility;
-    let db = this.requires.db;
     let details = {
       user: message.author.username,
       userID: message.author.id,
@@ -188,7 +183,7 @@ class Bot extends EventEmitter {
 
     let command = utility.getCommand(keyword);
     if(command != null) {
-      processCommand(command, details, db);
+      processCommand(command, details);
     }
     
     function handleDisabled(details) {
@@ -201,7 +196,7 @@ class Bot extends EventEmitter {
       });
     }
     
-    function processCommand(command, details, db) {
+    function processCommand(command, details) {
       const commandLevel = command.getPerm();
       if (commandLevel === 'public') {
         command.act(details);

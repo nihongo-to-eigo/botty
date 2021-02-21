@@ -1,6 +1,4 @@
-const { RSA_X931_PADDING } = require('constants');
 const Datastore = require('nedb');
-const { resolve } = require('path');
 const readline = require('readline');
 const rl = readline.createInterface({
   input: process.stdin,
@@ -24,7 +22,8 @@ function addPerm(permLevel) {
       resolve(doc);
     });
   });
-};
+}
+
 // adding permission levels
 function addHighPerm () {
   return new Promise((resolve, reject) => {
@@ -37,13 +36,13 @@ function addHighPerm () {
       if (err.errorType == 'uniqueViolated') {
         rl.write('High permission already exists\n');
         resolve();
-      }
-      else {
+      } else {
         reject(`Failed to add high permission: ${err}\n`);
       }
     });
   });
-};
+}
+
 // add low permission level
 function addLowPerm() {
   return new Promise((resolve, reject) => {
@@ -54,13 +53,12 @@ function addLowPerm() {
       if (err.errorType == 'uniqueViolated') {
         rl.write('Low permission already exists\n');
         resolve();
-      }
-      else {
+      } else {
         reject(`Failed to add low permission: ${err}\n`);
       }
     });
   });
-};
+}
 
 // set up settings DB
 const settingsDB = new Datastore('./src/lib/databases/settings.db');
@@ -83,20 +81,21 @@ function addSetting(setting, value) {
       resolve(doc);
     });
   });
-};
-    // get and set the home server id for the bot
+}
+
+// get and set the home server id for the bot
 function addHome() {
   return new Promise((resolve, reject) => {
     rl.question('What is the ID of the home Discord server? ', (homeServerId) => {
       addSetting('home_server_id', homeServerId).then(() => {
-        rl.write('Home server ID stored\n')
+        rl.write('Home server ID stored\n');
         resolve();
       }).catch((err) => {
         reject(`There was an issue storing the home server ID: ${err}\n`);
       });
     });
   });
-};
+}
 
 // get and set the private log channel id
 function addPrivateLogChannel() {
@@ -110,7 +109,7 @@ function addPrivateLogChannel() {
       });
     });
   });
-};
+}
 
 // get and set the public log channel id
 function addPublicLogChannel() {
@@ -124,7 +123,7 @@ function addPublicLogChannel() {
       });
     });
   });
-};
+}
 
 // get and set the warn role id
 function addWarnRole() {
@@ -138,7 +137,8 @@ function addWarnRole() {
       });
     });
   });
-};
+}
+
 // get and set the muted role id
 function addMutedRole() {
   return new Promise((resolve, reject) => {
@@ -151,7 +151,7 @@ function addMutedRole() {
       });
     });
   });
-};
+}
 
 // get and set the reading squad role id
 function addReadingRole() {
@@ -186,18 +186,18 @@ addHome().then(() => {
     addPublicLogChannel().then(() => {
       addWarnRole().then(() => {
         addMutedRole().then(() => {
-          Promise.all([addHighPerm(), addLowPerm()]).then((values) => {
+          Promise.all([addHighPerm(), addLowPerm()]).then(() => {
             addReadingRole().then(() => {
               addreadingChannel().then(() => {
                 rl.close();
-              })
-            })
-          })
-        })
-      })
-    })
-  })
-})
+              });
+            });
+          });
+        });
+      });
+    });
+  });
+});
 
 // graceful close message
 rl.on('close', () => {

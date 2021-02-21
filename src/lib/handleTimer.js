@@ -1,5 +1,5 @@
 module.exports = (requires) => {
-  const { info, bot } = requires;
+  const {info, bot} = requires;
 
   const handler = {};
   function unmuteUser(userID) {
@@ -19,12 +19,12 @@ module.exports = (requires) => {
   function processPassed(passed) {
     passed.forEach(timer => {
       switch(timer.type) {
-        case 'mute':
-          unmuteUser(timer.userID);
-          break;
-        case 'reading':
-          resetReadingSquad();
-          break;
+      case 'mute':
+        unmuteUser(timer.userID);
+        break;
+      case 'reading':
+        resetReadingSquad();
+        break;
       }
     });
   }
@@ -33,9 +33,9 @@ module.exports = (requires) => {
     info.db.findPassed(now).then(passedTimers => {
       processPassed(passedTimers);
       // do something, then delete passed Timers
-      info.db.removePassed(now).then(numRemoved => {
+      info.db.removePassed(now).then(() => {
       }).catch(console.log);
     }).catch(console.log);
   };
   return handler;
-}
+};

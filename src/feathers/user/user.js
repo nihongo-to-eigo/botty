@@ -1,7 +1,6 @@
 //Feather for getting user info to display nice
 'use strict';
-module.exports = function feather(requires)
-{
+module.exports = function feather(requires) {
   //feather obj
   const feather = {};
   
@@ -10,7 +9,7 @@ module.exports = function feather(requires)
   //feather functions
   feather.getInfo = function(details, uid) {
     let emb = {};
-    emb.title = bot.users.get(uid).username + "'s Info";
+    emb.title = bot.users.get(uid).username + '\'s Info';
     emb.description = '\n _ _';
     let server = bot.guilds.get(details.serverID);
     let extras = false;
@@ -24,14 +23,14 @@ module.exports = function feather(requires)
 
     if(extras) {
       if(server.members.get(uid).nick) {
-        let nickname = {name: "Nickname:", value: server.members.get(uid).nick};
+        let nickname = {name: 'Nickname:', value: server.members.get(uid).nick};
         fields.push(nickname);
       }          
-      let joined = {name: "Joined", value: getJoinedTime(details, uid)};
+      let joined = {name: 'Joined', value: getJoinedTime(details, uid)};
       fields.push(joined);
     }
 
-    let created = {name: "Created:", value: getCreatedTime(uid)};
+    let created = {name: 'Created:', value: getCreatedTime(uid)};
     fields.push(created);
     if(server.members.get(uid).game != null) {
       let playing = {name: 'Playing:', value: server.members.get(uid).game.name};
@@ -49,15 +48,12 @@ module.exports = function feather(requires)
   };
   const getJoinedTime = function(details, uid) {
     let d = new Date(bot.guilds.get(details.serverID).members.get(uid).joinedAt);
-    let localOffset = 5 * 60000;
-    let utc = d.getTime() + localOffset;
-    let dUTC = new Date(utc);
     return `${d.toUTCString()}`;
   };
   const getAvatar = function(uid) {
     let ava = undefined;
     let userAva = bot.users.get(uid).avatar;
-    if(userAva === null) return `https://cdn.discordapp.com/embed/avatars/${parseInt(bot.users.get(uid).discriminator, 10) % 5}.png`
+    if(userAva === null) return `https://cdn.discordapp.com/embed/avatars/${parseInt(bot.users.get(uid).discriminator, 10) % 5}.png`;
     if(userAva.startsWith('a_')) {
       ava = 'https://cdn.discordapp.com/avatars/' +uid+'/'+userAva+'.gif';
     } else {

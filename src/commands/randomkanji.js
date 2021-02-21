@@ -2,8 +2,7 @@
 const Command = require('../structures/Command');
 
 //For retrieving kanji readings, meanings, etc.
-module.exports = function command(requires)
-{
+module.exports = function command(requires) {
   return new Command({
     name: 'Random Kanji',
     inline: true,
@@ -11,21 +10,15 @@ module.exports = function command(requires)
     blurb: 'Gets info on random kanji.',
     usages: ['`%prefixrk`'],
     permission: 'public',
-    action: function(details)
-    {
+    action: function(details) {
       let bot = requires.bot;
       let info = requires.info;
       let kanji = info.utility.useSource('kanjiAPI');
 
-      const randomKanji = function()
-      {
-        kanji.randomKanji().then((emb) =>
-        {
-          bot.createMessage(details.channelID, {
-            embed: emb,
-          }); 
-        }).catch((err) =>
-        {
+      const randomKanji = function() {
+        kanji.randomKanji().then((emb) => {
+          bot.createMessage(details.channelID, {embed: emb}); 
+        }).catch((err) => {
           bot.createMessage(details.channelID, {
             embed: {
               title: 'Error',
@@ -35,7 +28,7 @@ module.exports = function command(requires)
         });
       };
 
-      if(details.input === "") {
+      if(details.input === '') {
         randomKanji();
       }
     }

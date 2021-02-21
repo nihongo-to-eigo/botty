@@ -6,7 +6,7 @@ class Clock extends EventEmitter {
     super();
     this.timer = setInterval(() => {
       this.emit('tick');
-    }, tickTime)
+    }, tickTime);
   }
 }
 

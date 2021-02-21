@@ -33,7 +33,6 @@ module.exports = (requires) => {
   };
   //Prints all of the roles in a server
   utilities.printRoles = (sid) => {
-    let serv = '';
     let r = '';
     let roleStr = '';
     for(r in bot.servers[sid].roles) {
@@ -81,17 +80,13 @@ module.exports = (requires) => {
   //returns the userID of a mention
   utilities.stripUID = (userString) => {
     let userID = false;
-    if (userString !== '')
-    {
-            //did we provide a mention?
-      let regexp = /<\@!*([a-zA-Z0-9]+)>/g;
+    if (userString !== '') {
+      //did we provide a mention?
+      let regexp = /<@!*([a-zA-Z0-9]+)>/g;
       let match = regexp.exec(userString);
-      if (match)
-      {
+      if (match) {
         userID = match[1];
-      }
-      else
-      {
+      } else {
         userID = false;
       }
     }
@@ -155,7 +150,7 @@ module.exports = (requires) => {
           } else {
             resolve('public');
           }
-        }).catch(console.log);
+        }).catch(reject);
       }
     });
   };
@@ -188,6 +183,6 @@ module.exports = (requires) => {
   
   utilities.red = 0xFF0000;
   utilities.green = 0x25bf06;
-  utilities.readingSquadCoolBlue = 0x0CCDD3
+  utilities.readingSquadCoolBlue = 0x0CCDD3;
   return utilities;
 };

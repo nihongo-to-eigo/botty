@@ -18,18 +18,13 @@ module.exports = function command(requires)
       let info = requires.info;
       let kanji = info.utility.useSource('strokeAPI');
 
-      const searchKanji = function(k)
-      {
-        kanji.searchKanji(k).then((file) =>
-        {
-          bot.createMessage(details.channelID, {
-            embed: {title: k, description: 'Stroke Order Gif', image: {url: 'attachment://stroke.gif'}},
-          },{
+      const searchKanji = function(k) {
+        kanji.searchKanji(k).then((file) => {
+          bot.createMessage(details.channelID, {embed: {title: k, description: 'Stroke Order Gif', image: {url: 'attachment://stroke.gif'}},},{
             file,
             name: 'stroke.gif'
           }); 
-        }).catch((err) =>
-        {
+        }).catch((err) => {
           bot.createMessage(details.channelID, {
             embed: {
               title: 'Error',
@@ -40,9 +35,8 @@ module.exports = function command(requires)
         });
       };
 
-      if(details.input === "") {return;}
-      else
-      {
+      if(details.input === '') {return;}
+      else {
         searchKanji(details.args[1]);
       }
     }

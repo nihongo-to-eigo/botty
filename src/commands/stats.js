@@ -2,8 +2,7 @@
 const Command = require('../structures/Command');
 
 //For getting bot stats (uptime, servers, etc)
-module.exports = function command(requires)
-{
+module.exports = function command(requires) {
   return new Command({
     name: 'Stats',
     inline: true,
@@ -12,15 +11,13 @@ module.exports = function command(requires)
     longDescription: 'Gets basic info such as uptime.', 
     usages: ['`%prefixstats`'], 
     permission: 'public',
-    action: function(details)
-    {
+    action: function(details) {
       let bot = requires.bot;
       let info = requires.info;
       let bObj = requires.bObj;
 
       let now = new Date();
-      const convertDate = function(ms)
-      {
+      const convertDate = function(ms) {
         let str = '';
         let x = ms / 1000;
         let seconds = Math.floor(x % 60);
@@ -30,28 +27,22 @@ module.exports = function command(requires)
         let hours = Math.floor(x % 24);
         x /= 24;
         let days = Math.floor(x);
-        if(days > 0)
-        {
+        if(days > 0) {
           str += `${days}d`;
         }
-        if(hours > 0)
-        {
+        if(hours > 0) {
           str += `${hours}h`;
         }
-        if(minutes > 0)
-        {
+        if(minutes > 0) {
           str += `${minutes}m`;
         }
-        if(seconds > 0)
-        {
+        if(seconds > 0) {
           str += `${seconds}s`;
         }
         return str;
       };
-      const getFeathers = function()
-      {
-        let s = Object.keys(info.feathers).map((key) => 
-        {
+      const getFeathers = function() {
+        let s = Object.keys(info.feathers).map((key) => {
           return key;
         }).join(', ');
         return s;
@@ -60,12 +51,8 @@ module.exports = function command(requires)
         embed: {
           title: `${bot.user.username}'s Stats`,
           description: '',
-          footer: {
-            text: 'Created by CyberRonin#5517'
-          },
-          thumbnail: {
-            url: `https://cdn.discordapp.com/avatars/${bot.user.id}/${bot.user.avatar}.webp`
-          },
+          footer: {text: 'Created by CyberRonin#5517'},
+          thumbnail: {url: `https://cdn.discordapp.com/avatars/${bot.user.id}/${bot.user.avatar}.webp`},
           fields:[
             {
               name: 'Servers',

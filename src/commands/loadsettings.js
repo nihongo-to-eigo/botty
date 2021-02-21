@@ -2,16 +2,14 @@
 const Command = require('../structures/Command');
 
 //loads the settings fromt he db
-module.exports = function command(requires)
-{
+module.exports = function command(requires) {
   return new Command({
     name: 'Load Settings',
     inline: true,
     alias: ['ls'],
     blurb: 'Loads the settings to the db',
     permission: 'private',
-    action: function(details)
-    {
+    action: function(details) {
       const db = requires.info.db;
       let settingsObj = {};
       db.getSettings().then(settings => {

@@ -1,9 +1,7 @@
 //setting up the database(s)
 'use strict';
 module.exports = function utility(requires) {
-  const bot = requires.bot;
-  const info = requires.info;
-  const config = info.config;
+  const {bot} = requires.bot;
 
   const Datastore = require('nedb');
   const db = {};
@@ -51,7 +49,7 @@ module.exports = function utility(requires) {
         resolve(doc);
       });
     });
-  }
+  };
   db.searchRoleByID = (roleID) => {
     return new Promise((resolve, reject) => {
       db.roles.findOne({_id: roleID}, (err, role) => {
@@ -61,7 +59,7 @@ module.exports = function utility(requires) {
         resolve(role); 
       });
     });
-  }
+  };
   db.listRoles = () => {
     return new Promise((resolve, reject) => {
       db.roles.find({}, (err, docs) => {
@@ -71,7 +69,7 @@ module.exports = function utility(requires) {
         resolve(docs.map(roleEntry => roleEntry.name));
       });
     });
-  }
+  };
   /**
    * DB setup for permissions
    */
@@ -92,7 +90,7 @@ module.exports = function utility(requires) {
         resolve(doc);
       });
     });
-  }
+  };
   db.removePerm = (permLevel) => {
     return new Promise((resolve, reject) => {
       db.permissions.remove({_id: permLevel}, {}, (err, numRemoved) => {
@@ -102,7 +100,7 @@ module.exports = function utility(requires) {
         resolve(numRemoved);
       });
     });
-  }
+  };
   db.addPermUser = (permLevel, userID) => {
     return new Promise((resolve, reject) => {
       db.permissions.update({_id: permLevel}, {$push: {users: userID}}, {}, (err, numChanged) => {
@@ -112,7 +110,7 @@ module.exports = function utility(requires) {
         resolve(numChanged);
       });
     });
-  }
+  };
   db.removePermUser = (permLevel, userID) => {
     return new Promise((resolve, reject) => {
       db.permissions.update({_id: permLevel}, {$pull: {users: userID}}, {}, (err, numChanged) => {
@@ -122,7 +120,7 @@ module.exports = function utility(requires) {
         resolve(numChanged);
       });
     });
-  }
+  };
   db.addPermRole = (permLevel, roleID) => {
     return new Promise((resolve, reject) => {
       db.permissions.update({_id: permLevel}, {$push: {roles: roleID}}, {}, (err, numChanged) => {
@@ -132,7 +130,7 @@ module.exports = function utility(requires) {
         resolve(numChanged);
       });
     });
-  }
+  };
   db.removePermRole = (permLevel, roleID) => {
     return new Promise((resolve, reject) => {
       db.permissions.update({_id: permLevel}, {$pull: {roles: roleID}}, {}, (err, numChanged) => {
@@ -142,7 +140,7 @@ module.exports = function utility(requires) {
         resolve(numChanged);
       });
     });
-  }
+  };
   db.findPerm = (userID, roleIDs) => {
     return new Promise((resolve, reject) => {
       db.permissions.findOne({$or: [{roles: {$in: roleIDs}}, {users: userID}]}, (err, docs) => {
@@ -150,9 +148,9 @@ module.exports = function utility(requires) {
           reject(err);
         }
         resolve(docs);
-      })
-    })
-  }
+      });
+    });
+  };
   /**
    * DB setup for tags
    */
@@ -172,7 +170,7 @@ module.exports = function utility(requires) {
         resolve(doc);
       });
     });
-  }
+  };
   db.removeTag = (tagName) => {
     return new Promise((resolve, reject) => {
       db.tags.remove({_id: tagName}, {}, (err, numRemoved) => {
@@ -182,7 +180,7 @@ module.exports = function utility(requires) {
         resolve(numRemoved);
       });
     });
-  }
+  };
   db.searchTag = (tagName) => {
     return new Promise((resolve, reject) => {
       db.tags.findOne({_id: tagName}, (err, doc) => {
@@ -192,7 +190,7 @@ module.exports = function utility(requires) {
         resolve(doc);
       });
     });
-  }
+  };
   db.listTags = () => {
     return new Promise((resolve, reject) => {
       db.tags.find({}, (err, docs) => {
@@ -202,7 +200,7 @@ module.exports = function utility(requires) {
         resolve(docs.map(tagEntry => tagEntry._id));
       });
     });
-  }
+  };
   /**
    * DB setup for timers
    */
@@ -219,7 +217,7 @@ module.exports = function utility(requires) {
         resolve(doc);
       });
     });
-  }
+  };
   db.removeTimer = (id) => {
     return new Promise((resolve, reject) => {
       db.timers.remove({_id: id}, (err, numRemoved) => {
@@ -229,7 +227,7 @@ module.exports = function utility(requires) {
         resolve(numRemoved);
       });
     });
-  }
+  };
   db.removePassed = (date) => {
     return new Promise((resolve, reject) => {
       db.timers.remove({timeEnd: {$lt: date}}, {multi: true}, (err, docsChanged) => {
@@ -237,9 +235,9 @@ module.exports = function utility(requires) {
           reject(err);
         }
         resolve(docsChanged);
-      })
-    })
-  }
+      });
+    });
+  };
   db.findPassed = (date) => {
     return new Promise((resolve, reject) => {
       db.timers.find({timeEnd: {$lt: date}}, (err, docs) => {
@@ -249,7 +247,7 @@ module.exports = function utility(requires) {
         resolve(docs);
       });
     });
-  }
+  };
   db.countTimers = (type) => {
     return new Promise((resolve, reject) => {
       db.timers.find({type}, (err, docs) => {
@@ -257,19 +255,19 @@ module.exports = function utility(requires) {
           reject(err);
         }
         resolve(docs.length);
-      })
-    })
+      });
+    });
   };
   db.getUserTimer = (userID) => {
     return new Promise((resolve, reject) => {
-      db.timers.find({ userID }, (err, docs) => {
+      db.timers.find({userID}, (err, docs) => {
         if(err) {
           reject(err);
         }
         resolve(docs);
-      })
-    })
-  }
+      });
+    });
+  };
   /**
    * DB setup for infractions
    */
@@ -297,7 +295,7 @@ module.exports = function utility(requires) {
         }
       });
     });
-  }
+  };
   db.getInfractions = (userID) => {
     return new Promise((resolve, reject) => {
       db.infractions.findOne({_id: userID}, (err, doc) => {
@@ -307,7 +305,7 @@ module.exports = function utility(requires) {
         resolve(doc);
       });
     });
-  }
+  };
   /**
    * DB setup for settings
    */
@@ -324,7 +322,7 @@ module.exports = function utility(requires) {
         resolve(doc);
       });
     });
-  }
+  };
   db.removeSetting = (setting) => {
     return new Promise((resolve, reject) => {
       db.settings.remove({_id: setting}, {}, (err, numRemoved) => {
@@ -334,7 +332,7 @@ module.exports = function utility(requires) {
         resolve(numRemoved);
       });
     });
-  }
+  };
   db.getSettings = () => {
     return new Promise((resolve, reject) => {
       db.settings.find({}, (err, docs) => {
@@ -342,16 +340,16 @@ module.exports = function utility(requires) {
           reject(err);
         }
         resolve(docs);
-      })
-    })
-  }
+      });
+    });
+  };
 
   /**
    * DB setup for reading squad
    */
   db.readingSquad = new Datastore('./src/lib/databases/readingSquad.db');
   db.readingSquad.loadDatabase();
-  db.readingSquad.ensureIndex({ fieldName: 'userID', unique: true });
+  db.readingSquad.ensureIndex({fieldName: 'userID', unique: true});
   //autocompaction every 10 minutes: _id is the user id
   db.readingSquad.persistence.setAutocompactionInterval(600000);
   db.addToReadingSquad = (userID) => {
@@ -363,7 +361,7 @@ module.exports = function utility(requires) {
         resolve(docs);
       });
     });
-  }
+  };
   db.listApprovedReadingSquad = () => {
     return new Promise((resolve, reject) => {
       db.readingSquad.find({}, (err, docs) => {
@@ -373,17 +371,17 @@ module.exports = function utility(requires) {
         resolve(docs.map(x => x.userID));
       });
     });
-  }
+  };
   db.clearReadingSquad = () => {
     return new Promise((resolve, reject) => {
-      db.readingSquad.remove({}, { multi: true }, (err, docs) => {
+      db.readingSquad.remove({}, {multi: true}, (err, docs) => {
         if (err) {
           reject(err);
         }
         resolve(docs);
       });
     });
-  }
+  };
 
   return db;
 };
