@@ -118,6 +118,7 @@ class Bot extends EventEmitter {
     if(this.debug) {
       bot.on('debug', this.onDebug.bind(this));
     }
+    
     bot.on('guildDelete', (server) => {
       console.log(`Left ${server}`);
     });
