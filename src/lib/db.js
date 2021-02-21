@@ -1,7 +1,7 @@
 //setting up the database(s)
 'use strict';
 module.exports = function utility(requires) {
-  const {bot} = requires.bot;
+  const {bot} = requires;
 
   const Datastore = require('nedb');
   const db = {};
