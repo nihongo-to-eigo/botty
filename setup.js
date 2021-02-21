@@ -1,3 +1,4 @@
+const { RSA_X931_PADDING } = require('constants');
 const Datastore = require('nedb');
 const { resolve } = require('path');
 const readline = require('readline');
@@ -33,7 +34,13 @@ function addHighPerm () {
       rl.write('Added high permission.\n');
       resolve();
     }).catch((err) => {
-      reject(`Failed to add high permission: ${err}\n`);
+      if (err.errorType == 'uniqueViolated') {
+        rl.write('High permission already exists\n');
+        resolve();
+      }
+      else {
+        reject(`Failed to add high permission: ${err}\n`);
+      }
     });
   });
 };
@@ -44,7 +51,13 @@ function addLowPerm() {
       rl.write('Added low permission.\n');
       resolve();
     }).catch((err) => {
-      reject(`Failed to add low permission: ${err}\n`);
+      if (err.errorType == 'uniqueViolated') {
+        rl.write('Low permission already exists\n');
+        resolve();
+      }
+      else {
+        reject(`Failed to add low permission: ${err}\n`);
+      }
     });
   });
 };
@@ -59,6 +72,9 @@ settingsDB.loadDatabase();
  * @param {string} value Value of the setting
  */
 function addSetting(setting, value) {
+  if (value == '')
+    return Promise.resolve();
+
   return new Promise((resolve, reject) => {
     settingsDB.insert({_id: setting, value}, (err, doc) => {
       if (err) {
@@ -131,11 +147,39 @@ function addMutedRole() {
         rl.write('Muted role ID stored\n');
         resolve();
       }).catch((err) => {
-        reject(`There was an error tryign to store the muted role ID: ${err}`);
+        reject(`There was an error trying to store the muted role ID: ${err}`);
       });
     });
   });
 };
+
+// get and set the reading squad role id
+function addReadingRole() {
+  return new Promise((resolve, reject) => {
+    rl.question('What is the ID of the reading squad role? ', (squadRoleId) => {
+      addSetting('reading_squad_role_id', squadRoleId).then(() => {
+        rl.write('Reading squad role ID stored\n');
+        resolve();
+      }).catch((err) => {
+        reject(`There was an error trying to store the reading squad role ID: ${err}`);
+      });
+    });
+  });
+}
+
+// get and set the reading squad reports channel id
+function addreadingChannel() {
+  return new Promise((resolve, reject) => {
+    rl.question('What is the ID of the reading reports channel? ', (reportsChannelId) => {
+      addSetting('reading_reports_channel', reportsChannelId).then(() => {
+        rl.write('Reading reports channel ID stored\n');
+        resolve();
+      }).catch((err) => {
+        reject(`There was an error trying to store the reading reports channel ID: ${err}`);
+      });
+    });
+  });
+}
 
 addHome().then(() => {
   addPrivateLogChannel().then(() => {
@@ -143,7 +187,9 @@ addHome().then(() => {
       addWarnRole().then(() => {
         addMutedRole().then(() => {
           Promise.all([addHighPerm(), addLowPerm()]).then((values) => {
-            rl.close();
+            Promise.all([addReadingRole(), addreadingChannel()]).then((values) => {
+              rl.close();
+            })
           })
         })
       })

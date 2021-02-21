@@ -252,11 +252,11 @@ module.exports = function utility(requires) {
   }
   db.countTimers = (type) => {
     return new Promise((resolve, reject) => {
-      db.timers.count({type}, (err, docs) => {
+      db.timers.find({type}, (err, docs) => {
         if (err) {
           reject(err);
         }
-        resolve(docs);
+        resolve(docs.length);
       })
     })
   };

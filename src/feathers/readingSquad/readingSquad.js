@@ -8,14 +8,22 @@ module.exports = function feather(requires)
   
   //requires
   const { bot, info } = requires;
-  const squadRole = info.settings.readingSquadRole;
-  const reportsChannel = info.settings.readingReportsChannel;
+  let squadRole, reportsChannel;
 
   //feather functions
   feather.onReady = function() {
+    if (info.settings == null)
+      return;
+      
+    squadRole = info.settings.reading_squad_role_id;
+    reportsChannel = info.settings.reading_reports_channel;
+
     if (squadRole != null && reportsChannel != null) {
       bot.on('messageReactionAdd', onReadingReportReaction.bind(this));
-      info.db.countTimers('reading').then(count => { if (count === 0) setUpcomingDeadline() });
+      info.db.countTimers('reading').then(count => {
+        if (count === 0)
+          feather.setUpcomingDeadline();
+      });
     }
   }
 
@@ -71,6 +79,9 @@ module.exports = function feather(requires)
 
   function getUpcomingDeadline() {
     const deadline = new Date();
+    
+    // deadline.setMinutes(deadline.getMinutes() + 1); return deadline; // for testing
+
     deadline.setUTCHours(15); //  15 UTC = midnight in Japan
     deadline.setUTCMinutes(0);
     deadline.setUTCSeconds(0);
@@ -93,13 +104,12 @@ module.exports = function feather(requires)
     if (emoji.name !== '✅')
       return;
 
-    bot.client.getMessage(message.channel.id, message.id).then(fullMessage => {
+    bot.getMessage(message.channel.id, message.id).then(fullMessage => {
       const checks = fullMessage.reactions['✅'] || { count: 0 };
       if (checks.count != 1)
         return; //  only take action the first time somebody reacts
       
-      const readingSquad = info.utility.useSource('readingSquad');
-      readingSquad.approve(fullMessage.member);
+      feather.approve(fullMessage.member);
     });
   }
 
