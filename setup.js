@@ -187,8 +187,10 @@ addHome().then(() => {
       addWarnRole().then(() => {
         addMutedRole().then(() => {
           Promise.all([addHighPerm(), addLowPerm()]).then((values) => {
-            Promise.all([addReadingRole(), addreadingChannel()]).then((values) => {
-              rl.close();
+            addReadingRole().then(() => {
+              addreadingChannel().then(() => {
+                rl.close();
+              })
             })
           })
         })
