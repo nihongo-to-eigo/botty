@@ -1,7 +1,5 @@
 //Feather for the jisho API
-'use strict';
-module.exports = function feather(requires)
-{
+module.exports = function feather() {
   //feather obj
   const feather = {};
   //set variable for config
@@ -12,84 +10,60 @@ module.exports = function feather(requires)
   const urlencode = require('urlencode');
   
   //feather functions
-  feather.searchKanji = function(kanji)
-  {
-    return new Promise((resolve, reject) =>
-    {
-      kanjiReq(kanji).then((data) =>
-      {
+  feather.searchKanji = function(kanji) {
+    return new Promise((resolve, reject) => {
+      kanjiReq(kanji).then((data) => {
         resolve(prettyDisplay(data));
       }).catch(reject);
     });
-  }
+  };
   //find random kanji
   feather.randomKanji = () => {
     return new Promise((resolve, reject) => {
       randomKanjiReq().then((data) => {
         resolve(prettyDisplay(data));
       }).catch(reject);
-    })
-  }
+    });
+  };
   const randomKanjiReq = () => {
-    return new Promise((resolve, reject) =>
-    {
+    return new Promise((resolve, reject) => {
       let url = 'https://skurt.me/api/kanji/random';
       snekfetch.get(url).set('Content-type', 'application/json').set('authorization', config.key)
-        .then((response) =>
-        {
-          if(response.statusCode === 200)
-          {
+        .then((response) => {
+          if(response.statusCode === 200) {
             resolve(response.body);
-          }
-          else
-          {
+          } else {
             reject(response);
           }
         }).catch(reject);
     });
-  }
+  };
   //helper functions
-  const kanjiReq = function(kanji)
-  {
-    return new Promise((resolve, reject) =>
-    {
+  const kanjiReq = function(kanji) {
+    return new Promise((resolve, reject) => {
       let url = 'https://skurt.me/api/kanji/find/' + urlencode(kanji);
       snekfetch.get(url).set('Content-type', 'application/json').set('authorization', config.key)
-        .then((response) =>
-        {
-          if(response.statusCode === 200)
-          {
+        .then((response) => {
+          if(response.statusCode === 200) {
             resolve(response.body);
-          }
-          else
-          {
+          } else {
             reject(response);
           }
         }).catch(reject);
     });
-  }
-  const prettyDisplay = function(body)
-  {
+  };
+  const prettyDisplay = function(body) {
     let emb = {};
-    if(body)
-    {
-      if(body._id != undefined)
-      {
+    if(body) {
+      if(body._id != undefined) {
         emb.title = body._id;
-        if(body.jlpt == undefined && body.grade == undefined)
-        {
-          emb.description = `\n _ _`;
-        }
-        else if(body.jlpt == undefined && body.grade != undefined)
-        {
+        if(body.jlpt == undefined && body.grade == undefined) {
+          emb.description = '\n _ _';
+        } else if(body.jlpt == undefined && body.grade != undefined) {
           emb.description = `Grade ${body.grade}`;
-        }
-        else if(body.jlpt != undefined && body.grade == undefined)
-        {
+        } else if(body.jlpt != undefined && body.grade == undefined) {
           emb.description = `JLPT N${body.jlpt}`;
-        }
-        else if(body.jlpt != undefined && body.grade != undefined)
-        {
+        } else if(body.jlpt != undefined && body.grade != undefined) {
           emb.description = `JLPT N${body.jlpt}, Grade ${body.grade}`;
         }
         
@@ -99,18 +73,15 @@ module.exports = function feather(requires)
         let radical = {name: 'Radical', value: body.radical.literal, inline: true};
         fields.push(radical);
         
-        if(body.parents)
-        {
+        if(body.parents) {
           let parents = {name: 'Elements', value: body.parents.join('\n'), inline: true};
           fields.push(parents);
         }
-        if(body.children)
-        {
+        if(body.children) {
           let parents = {name: 'Related Kanji', value: body.children.join(','), inline: true};
           fields.push(parents);
         }
-        if(body.nanori)
-        {
+        if(body.nanori) {
           let related = {name: 'Nanori', value: body.nanori.join(', '), inline: true};
           fields.push(related);
         }
@@ -122,22 +93,18 @@ module.exports = function feather(requires)
         }
         emb.fields = fields;
         return emb;
-      }
-      else
-      {
+      } else {
         emb.title = 'Error';
         emb.description = 'There was no result for what you searched. If this is an error of the command, please contact CyberRonin';
         return emb;
       }
       
-    }
-    else
-    {
+    } else {
       emb.title = 'Error';
       emb.description = 'There was no result for what you searched. If this is an error of the command, please contact CyberRonin';
       return emb;
     }
-  }
+  };
 
   return feather;
 };

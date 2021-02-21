@@ -1,10 +1,7 @@
 module.exports = (requires) => {
-  const { info, bot } = requires;
+  const {info, bot} = requires;
 
   const handler = {};
-  function searchForMuted(roles) {
-    roles.includes(info.settings.mute_role_id)
-  }
   function unmuteUser(userID) {
     const user = bot.guilds.get(info.settings.home_server_id).members.get(userID);
     if(user !== undefined) {
@@ -15,11 +12,19 @@ module.exports = (requires) => {
       }
     }
   }
+  function resetReadingSquad() {
+    const readingSquad = info.utility.useSource('readingSquad');
+    readingSquad.reset();
+  }
   function processPassed(passed) {
     passed.forEach(timer => {
       switch(timer.type) {
-        case 'mute':
-          unmuteUser(timer.userID);
+      case 'mute':
+        unmuteUser(timer.userID);
+        break;
+      case 'reading':
+        resetReadingSquad();
+        break;
       }
     });
   }
@@ -27,10 +32,10 @@ module.exports = (requires) => {
     const now = new Date;
     info.db.findPassed(now).then(passedTimers => {
       processPassed(passedTimers);
-      // do something, then delet passed Timers
-      info.db.removePassed(now).then(numRemoved => {
+      // do something, then delete passed Timers
+      info.db.removePassed(now).then(() => {
       }).catch(console.log);
     }).catch(console.log);
   };
   return handler;
-}
+};

@@ -2,13 +2,10 @@
  * @file Class file for a command.
  * @author Ronin
  */
-'use strict';
-
 /**
  * @class
  */
-class Command
-{
+class Command {
   /**
    * @param {Object} settings - Object that holds the settings for the class.
    * @param {String} settings.name - Name of the command.
@@ -25,13 +22,12 @@ class Command
    * @param {Object} requires.botObj - Instance of a bot.
    * or not, defaults to false.
    */
-  constructor(settings, requires)
-  {
+  constructor(settings, requires) {
     //required
     this.name = settings.name;
     this.alias = settings.alias;
     this.blurb = settings.blurb; 
-    this.longDescription = settings.longDescription || "No description"; 
+    this.longDescription = settings.longDescription || 'No description'; 
     this.usages = settings.usages || []; 
     this.action = settings.action;
     this.bot = requires.bot;
@@ -46,8 +42,7 @@ class Command
    * @function
    * @returns {String} Name of the command.
    */
-  getName()
-  {
+  getName() {
     return this.name;
   }
   /**
@@ -55,8 +50,7 @@ class Command
    * @function
    * @returns {Array<String>} Array of strings that represent the alias/aliases.
    */
-  getAlias()
-  {
+  getAlias() {
     return this.alias;
   }
   /**
@@ -64,8 +58,7 @@ class Command
    * @function
    * @returns {String} Description of the command.
    */
-  getDesc()
-  {
+  getDesc() {
     return this.description;
   }
   /**
@@ -73,20 +66,17 @@ class Command
    * @function
    * @returns {String} Permission level of the command.
    */
-  getPerm()
-  {
+  getPerm() {
     return this.permission;
   }
   /**
    * Action that the command takes
    * @function
    */
-  act(details)
-  {
+  act(details) {
     this.action(details);
   }
-  getAction()
-  {
+  getAction() {
     return this.action;
   }
 }

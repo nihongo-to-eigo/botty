@@ -1,5 +1,5 @@
 module.exports = (requires) => {
-  const { info, bot } = requires;
+  const {info, bot} = requires;
 
   const handler = {};
   function muteUser(userID) {
@@ -22,4 +22,4 @@ module.exports = (requires) => {
     }
   };
   return handler;
-}
+};

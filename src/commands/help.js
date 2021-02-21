@@ -2,8 +2,7 @@
 const Command = require('../structures/Command');
 
 //Help command
-module.exports = function command(requires)
-{
+module.exports = function command(requires) {
   return new Command({
     name: 'Help',
     inline: true,
@@ -11,20 +10,18 @@ module.exports = function command(requires)
     blurb: 'See function and usage of each command',
     longDescription: 'See usage details for commands or bring up a list of available commands',
     usages: ['`%prefixhelp` ― Shows list of commands with short descriptions',
-             '`%prefixhelp {command}` ― Shows full help message for a specific command'],
+      '`%prefixhelp {command}` ― Shows full help message for a specific command'],
     permission: 'public',
-    action: function(details)
-    {
+    action: function(details) {
       let bot = requires.bot;
       let info = requires.info;
       let utility = info.utility;
       let emb = {};
       emb.fields = [];
       emb.title = 'Help';
-      emb.description = utility.filter("You can DM the bot :heart:\nUse `%prefixhelp {command}` to get more detailed information about a command.");
+      emb.description = utility.filter('You can DM the bot :heart:\nUse `%prefixhelp {command}` to get more detailed information about a command.');
       
-      const listCommands = function(userLevel)
-      {
+      const listCommands = function(userLevel) {
         Object.keys(info.commands).forEach((commandName,index) => {
           let command = info.commands[commandName];
           let commandLevel = command.getPerm();                
@@ -45,13 +42,10 @@ module.exports = function command(requires)
           emb.fields.push(field);
         });
         //seeeeend it once all of the commands are iterated through
-        bot.createMessage(details.channelID, {
-          embed: emb
-        });
+        bot.createMessage(details.channelID, {embed: emb});
       };
       
-      const sendDetails = function(commandName, userLevel)
-      {
+      const sendDetails = function(commandName, userLevel) {
         let command = utility.getCommand(commandName);
         if(command == null
            || !utility.hasPermission(command.getPerm(), userLevel)) {
@@ -69,18 +63,19 @@ module.exports = function command(requires)
             value: command.longDescription
           };
           if(command.alias.length > 0) {
-            emb.fields.push({name: 'Aliases',
-              value: command.alias.join(', ')});
+            emb.fields.push({
+              name: 'Aliases',
+              value: command.alias.join(', ')
+            });
           }
           if(command.usages.length > 0) {
             const filteredUsages = command.usages.map(usage => utility.filter(usage));
             emb.fields.push({
               name: 'Usages:',
-              value: filteredUsages.join('\n')});
+              value: filteredUsages.join('\n')
+            });
           }
-          bot.createMessage(details.channelID, {
-            embed: emb
-          });
+          bot.createMessage(details.channelID, {embed: emb});
         }
       };
       

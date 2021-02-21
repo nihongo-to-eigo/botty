@@ -2,16 +2,14 @@
 const Command = require('../structures/Command');
 
 //command to get a users infractions
-module.exports = function command(requires)
-{
+module.exports = function command(requires) {
   return new Command({
     name: 'Rapsheet',
     inline: true,
     alias: ['rs'],
     blurb: 'Get\'s a user\'s infractions.',
     permission: 'low',
-    action: function(details)
-    {
+    action: function(details) {
       const bot = requires.bot;
       const info = requires.info;
       const userFeather = info.utility.useSource('user');
@@ -39,8 +37,9 @@ module.exports = function command(requires)
         return fields;
       }
       //processes input
-      if(details.input === "") {return;}
-      else {
+      if(details.input === '') {
+        return;
+      } else {
         if(details.args.length === 2) {
           const userTest = info.utility.stripUID(details.args[1]);
           if(userTest) {
@@ -54,8 +53,7 @@ module.exports = function command(requires)
                 userEmb.title = `${bot.users.get(userTest).username}'s Rapsheet`;
                 bot.createMessage(details.channelID, {embed: userEmb});
               }
-              
-            })
+            });
           }
         }
       }

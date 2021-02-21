@@ -4,15 +4,19 @@
   "description": "- Node.js > v8",
   "main": "start.js",
   "dependencies": {
-    "eris": "^0.9.0",
+    "eris": "^0.14.0",
     "nedb": "^1.8.0",
     "punycode": "^2.1.1",
     "snekfetch": "^4.0.4",
     "urlencode": "^1.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^7.20.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "setup": "node setup.js",
+    "debug": "node start.js"
   },
   "repository": {
     "type": "git",

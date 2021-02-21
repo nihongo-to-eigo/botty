@@ -2,8 +2,7 @@
 const Command = require('../structures/Command');
 
 //Kills the bot, just in case it's acting up ;)
-module.exports = function command(requires)
-{
+module.exports = function command(requires) {
   return new Command({
     name: 'Kill',
     inline: true,
@@ -12,8 +11,7 @@ module.exports = function command(requires)
     longDescription: 'Sometimes you just gotta do it ┐(´д｀)┌', 
     usages: ['`%prefixkill`'], 
     permission: 'private',
-    action: function(details)
-    {
+    action: function() {
       requires.bObj.kill();
     }
   }, requires);

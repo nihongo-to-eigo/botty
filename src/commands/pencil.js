@@ -2,8 +2,7 @@
 const Command = require('../structures/Command');
 
 //Adds a pencil at the end of your nickname or username.
-module.exports = function command(requires)
-{
+module.exports = function command(requires) {
   return new Command({
     name: 'Pencil',
     inline: true,
@@ -12,8 +11,7 @@ module.exports = function command(requires)
     longDescription: 'Adds a pencil emoji to your nickname, indicating you\'d like to have your messages be proactively corrected.',
     usages: ['`%prefixp`'],
     permission: 'public',
-    action: function(details)
-    {
+    action: function(details) {
       let bot = requires.bot;
       let info = requires.info;
       let member = bot.guilds.get(details.serverID).members.get(details.userID);
@@ -23,19 +21,12 @@ module.exports = function command(requires)
         if(!nickname.endsWith(pencil)) {
           let newName = member.nick ? member.nick + ' ' + pencil : member.username + ' ' + pencil;
           member.edit({nick: newName}).then(() => {
-            bot.createMessage(details.channelID, {embed: {
-              title: 'Success', description: pencil + ' Has been added.', color: info.utility.green}
-            });
+            bot.createMessage(details.channelID, {embed: {title: 'Success', description: pencil + ' Has been added.', color: info.utility.green}});
           }).catch(() => {
-            bot.createMessage(details.channelID, {embed: {
-              title: 'Error', description: 'An error occured.', color: info.utility.red}
-            });
+            bot.createMessage(details.channelID, {embed: {title: 'Error', description: 'An error occured.', color: info.utility.red}});
           });
-        }
-        else {
-          bot.createMessage(details.channelID, {embed: {
-            title: 'Error', description: 'You already have ' + pencil, color: info.utility.red}
-          });
+        } else {
+          bot.createMessage(details.channelID, {embed: {title: 'Error', description: 'You already have ' + pencil, color: info.utility.red}});
         }
       }
     }
