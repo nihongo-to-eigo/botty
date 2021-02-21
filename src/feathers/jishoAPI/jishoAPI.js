@@ -9,7 +9,7 @@ module.exports = function feather(requires)
   //requires
   const snekfetch = require('snekfetch');
   const urlencode = require('urlencode');
-  
+
   //feather functions
   feather.searchJisho = function(word, num)
   {
@@ -54,7 +54,8 @@ module.exports = function feather(requires)
   //list the japanese readings
   const listJapanese = function(api, dmBool)
   {
-    let emb = {title: 'Reading List:', color:0xa7fcd0, footer: {text: 'Results provided by jisho.org'}};
+    let utility = requires.info.utility;
+    let emb = {title: 'Reading List:', color:0xa7fcd0, footer: {text: utility.filter('Results from jisho.org. Use %prefixhelp {jisho} for more info on usage.')}};
     let list = '';
     let goingToDM = undefined;
     let dataLen = api.data.length;
@@ -68,7 +69,7 @@ module.exports = function feather(requires)
       }
       list += line;
     }
-    emb.description = list + '\nUse jisho(j) <word> <number on list> to get that entry';
+    emb.description = list + ' Use  <word> <number on list> to get that entry';
     if(!dmBool && dataLen > 10)
     {
       emb.footer = {text: 'You have been DMed due to the amount of results'};
@@ -162,9 +163,10 @@ module.exports = function feather(requires)
   //takes all of the data found and displays it nicely
   const prettyDisplay = function(api, num)
   {
+    let utility = requires.info.utility;
     let readField = {name: 'Reading(s):',inline: true};
     let tagField = {name: 'Tag(s):',inline: true};
-    let embed = {title: '', description: '', color: 0xa7fcd0, footer: { text:'Results from jisho.org.'}};
+    let embed = {title: '', description: '', color: 0xa7fcd0, footer: { text: utility.filter('Results from jisho.org. Use %prefixhelp jisho for more info on usage.')}};
     let fields = [];
     try
     {
@@ -212,12 +214,6 @@ module.exports = function feather(requires)
           thisDef.inline = false;
           fields.push(thisDef);
         });
-
-        if(api.data.length > 10)
-        {
-          embed.footer.text += ' The lookup has more than 10 items from Jisho. Try jisho(j) <word> --list for the list.';
-        }
-        
       }
     }
     catch(err)

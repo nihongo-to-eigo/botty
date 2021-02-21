@@ -9,6 +9,8 @@ module.exports = function command(requires)
     inline: true,
     alias: ['w'],
     blurb: 'Warns people.',
+    longDescription: 'Warns a user and adds to their infraction count for their rapsheet',
+    usages: ['`%prefixw {user} {reason}`'],
     permission: 'low',
     action: function(details)
     {
@@ -30,7 +32,7 @@ module.exports = function command(requires)
             const warnedUser = bot.guilds.get(info.settings.home_server_id).members.get(userTest); //.addRole(info.settings.warn_role_id)
             if(warnedUser) {
               bot.createMessage(details.channelID,{content:`${details.args[1]}, you have been warned for: ${reason}`});
-              bot.createMessage(info.settings.private_log_channel, {embed: {title: 'Log', fields: [{name: 'User', value: details.args[1]}, {name: 'Action', value: 'warn'} ,{name: 'Reason', value: reason}, {name: 'Responsible Mod', value: `<@${details.userID}>`}]}});
+              bot.createMessage(info.settings.private_log_channel, {embed: {title: 'Log', fields: [{name: 'User', value: details.args[1]}, {name: 'Action', value: 'warn'} ,{name: 'Reason', value: reason}, {name: 'Message Link', value: details.link}, {name: 'Responsible Mod', value: `<@${details.userID}>`}]}});
               warnedUser.addRole(info.settings.warn_role_id);
             }
             
