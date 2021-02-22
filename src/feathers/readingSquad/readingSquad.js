@@ -88,7 +88,7 @@ module.exports = function feather(requires)
     deadline.setUTCMinutes(0);
     deadline.setUTCSeconds(0);
     deadline.setUTCMilliseconds(0);
-    deadline.setUTCDate(deadline.getUTCDate() + (7 - (deadline.getUTCDay() - 1))); //  upcoming Monday
+    deadline.setUTCDate(deadline.getUTCDate() + (7 - deadline.getUTCDay()) % 7 + 1) //  upcoming Monday
     return deadline;
   }
 
