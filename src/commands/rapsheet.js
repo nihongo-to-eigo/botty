@@ -9,9 +9,11 @@ module.exports = function command(requires) {
     alias: ['rs'],
     blurb: 'Get\'s a user\'s infractions.',
     permission: 'low',
-    action: function(details) {
+    action: async function(details) {
       const bot = requires.bot;
       const info = requires.info;
+      await bot.sendChannelTyping(details.channelID);
+      
       const userFeather = info.utility.useSource('user');
       function processInfractions(infractions) {
         const len = infractions.length;
@@ -43,17 +45,17 @@ module.exports = function command(requires) {
         if(details.args.length === 2) {
           const userTest = info.utility.stripUID(details.args[1]);
           if(userTest) {
-            let userEmb = userFeather.getInfo(details, userTest);
-            info.db.getInfractions(userTest, userTest).then(stuff => {
-              if(stuff === null) {
-                bot.createMessage(details.channelID, {embed: userEmb});
-              } else {
-                userEmb.fields = processInfractions(stuff.infractions, userTest).concat(userEmb.fields);
-                userEmb.color = 0xFF0000;
-                userEmb.title = `${bot.users.get(userTest).username}'s Rapsheet`;
-                bot.createMessage(details.channelID, {embed: userEmb});
-              }
-            });
+            const { embed, user } = await userFeather.getInfo(details, userTest);
+            const stuff = await info.db.getInfractions(userTest, userTest);
+
+            if(stuff === null) {
+              bot.createMessage(details.channelID, { embed });
+            } else {
+              embed.fields = processInfractions(stuff.infractions, userTest).concat(embed.fields);
+              embed.color = 0xFF0000;
+              embed.title = `${user.username}'s Rapsheet`;
+              bot.createMessage(details.channelID, {embed: embed});
+            }
           }
         }
       }

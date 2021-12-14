@@ -11,7 +11,7 @@ module.exports = function command(requires) {
     longDescription: 'Retrieves kanji data from kanjidic2. \n Gets info such as kanji meaning, readings, radical, composing elements, and JLPT level.',
     usages: ['`%prefixkanji {kanji}` ― Returns info on {kanji}'],
     permission: 'public',
-    action: function(details) {
+    action: async function(details) {
       let bot = requires.bot;
       let info = requires.info;
       let kanji = info.utility.useSource('kanjiAPI');
@@ -40,11 +40,11 @@ module.exports = function command(requires) {
         });
       };
 
-      if(details.input === '') {
+      if(details.input === '')
         return;
-      } else {
-        searchKanji(details.args[1]);
-      }
+      
+      await bot.sendChannelTyping(details.channelID);
+      searchKanji(details.args[1]);
     }
   }, requires);
 };

@@ -33,7 +33,10 @@ class Bot extends EventEmitter {
     this.debug = settings.debug || false;
     this.shard = settings.shard || false;
     this.forked = settings.forked || false;
-    this.client = new Client(this.config.api.discord_token, {getAllUsers: true});
+    this.client = new Client(this.config.api.discord_token, {
+      getAllUsers: true,
+      restMode: true
+    });
 
     //other members
     this.startTime = new Date();
@@ -71,7 +74,7 @@ class Bot extends EventEmitter {
     Promise.all([commandPromise, modulePromise, featherPromise, this.client.connect()]).then((values) => {
       this.requires.commands = values[0].commands;
       this.requires.privates = values[0].privates;
-      //this.requires.merge(values[1]);
+      
       this.requires = Object.assign(this.requires, values[1]);
       this.requires.feathers = values[2];
       this.requires.db.getSettings().then(settingsArr => {
@@ -154,6 +157,7 @@ class Bot extends EventEmitter {
       user: message.author.username,
       userID: message.author.id,
       author: message.author,
+      messageID: message.id,
       channelID: message.channel.id,
       message: message.content,
       link: message.channel.guild ? `https://discordapp.com/channels/${message.channel.guild.id || ''}/${message.channel.id}/${message.id}` : '',

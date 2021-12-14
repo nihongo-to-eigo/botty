@@ -10,7 +10,7 @@ module.exports = function command(requires) {
     blurb: 'Gets info on random kanji.',
     usages: ['`%prefixrk`'],
     permission: 'public',
-    action: function(details) {
+    action: async function(details) {
       let bot = requires.bot;
       let info = requires.info;
       let kanji = info.utility.useSource('kanjiAPI');
@@ -29,6 +29,7 @@ module.exports = function command(requires) {
       };
 
       if(details.input === '') {
+        await bot.sendChannelTyping(details.channelID);
         randomKanji();
       }
     }

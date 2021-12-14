@@ -238,6 +238,16 @@ module.exports = function utility(requires) {
       });
     });
   };
+  db.removeTimerType = (type) => {
+    return new Promise((resolve, reject) => {
+      db.timers.remove({type}, {multi: true}, (err, docsChanged) => {
+        if(err) {
+          reject(err);
+        }
+        resolve(docsChanged);
+      });
+    });
+  };
   db.findPassed = (date) => {
     return new Promise((resolve, reject) => {
       db.timers.find({timeEnd: {$lt: date}}, (err, docs) => {

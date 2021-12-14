@@ -11,7 +11,7 @@ module.exports = function feather(requires)
   let squadRole, reportsChannel;
 
   //feather functions
-  feather.onReady = function() {
+  feather.onReady = async function() {
     if (info.settings == null)
       return;
       
@@ -20,33 +20,64 @@ module.exports = function feather(requires)
 
     if (squadRole != null && reportsChannel != null) {
       bot.on('messageReactionAdd', onReadingReportReaction.bind(this));
-      info.db.countTimers('reading').then(count => {
-        if (count === 0)
-          feather.setUpcomingDeadline();
+
+      const count = await info.db.countTimers('reading');
+      if (count === 0)
+        await feather.setUpcomingDeadline();
+    }
+  };
+
+  feather.reset = async function() {
+    await postResetMessage();
+    const expiredMembers = await getMembersToClear();
+    await clearRoles(expiredMembers);
+    await info.db.clearReadingSquad();
+    await feather.setUpcomingDeadline();
+  };
+
+  feather.approve = async function(member, user) {
+    if (!member) {
+      await bot.createMessage(info.settings.info_log_channel, {
+        embed: {
+          title: 'Reading report approval failed',
+          fields: [{ name: 'Details', value: 'User is no longer in the server' }, {name: 'User', value: `<@${user ? user.id : ''}>`}],
+          color: info.utility.red
+        }
       });
+      return false;
+    }
+    
+    try {
+      if (!member.roles.includes(squadRole))
+        await member.addRole(squadRole, 'Reading report approved');
+
+      await info.db.addToReadingSquad(member.id);
+      
+      await bot.createMessage(info.settings.info_log_channel, {
+        embed: {
+          title: 'Reading report approved',
+          fields: [{name: 'User', value: `<@${member.id}>`}],
+          color: info.utility.readingSquadCoolBlue
+        }
+      });
+
+      return true;
+    } catch (e) {
+      await bot.createMessage(info.settings.info_log_channel, {
+        embed: {
+          title: 'Reading report approval failed',
+          fields: [{name: 'User', value: `<@${member.id}>`}, { name: 'Details', value: e.toString() }],
+          color: info.utility.red
+        }
+      });
+
+      return false;
     }
   };
 
-  feather.reset = function() {
-    postResetMessage()
-      .then(() => getMembersToClear())
-      .then(expiredMembers => clearRoles(expiredMembers))
-      .then(() => info.db.clearReadingSquad())
-      .then(() => feather.setUpcomingDeadline());
-  };
-
-  feather.approve = function(member) {
-    if (member) {
-      if (!member.roles.includes(squadRole)) {
-        member.addRole(squadRole, 'Reading report approved');
-      }
-      info.db.addToReadingSquad(member.id);
-    }
-  };
-
-  feather.setUpcomingDeadline = function() {
+  feather.setUpcomingDeadline = async function() {
     const deadline = getUpcomingDeadline();
-    info.db.addTimer(null, 'reading', deadline);
+    await info.db.addTimer(null, 'reading', deadline);
     return deadline;
   };
 
@@ -61,29 +92,44 @@ module.exports = function feather(requires)
     });
   }
 
-  function getMembersToClear() {
-    return info.db.listApprovedReadingSquad().then(approvedIDs => {
-      //  get all users with the reading squad role
-      const server = bot.guilds.get(info.settings.home_server_id);
-      const currentSquad = server.members.filter(x => x.roles.includes(squadRole));
+  async function getMembersToClear() {
+    const approvedIDs = await info.db.listApprovedReadingSquad();
 
-      //  get ids of users who didn't post a report this week
-      return currentSquad.filter(x => !approvedIDs.includes(x.id));
-    });
+    //  get all users with the reading squad role
+    const server = bot.guilds.get(info.settings.home_server_id);
+    const currentSquad = server.members.filter(x => x.roles.includes(squadRole));
+
+    //  get ids of users who didn't post a report this week
+    return currentSquad.filter(x => !approvedIDs.includes(x.id));
   }
 
-  function clearRoles(expiredMembers) {
+  async function clearRoles(expiredMembers) {
     //  remove roles from people who didn't post a report
+    
+    let success = [], fail = [];
     for (const member of expiredMembers) {
-      member.removeRole(squadRole, 'Reading report expired');
+      try {
+        await member.removeRole(squadRole, 'Reading report expired');
+        success.push(member.id);
+      } catch (e) {
+        fail.push(member.id);
+      }
     }
+
+    await bot.createMessage(info.settings.info_log_channel, {
+      embed: {
+        color: info.utility.readingSquadCoolBlue,
+        title: 'Reading Report expired ',
+        fields: [
+          { name: 'Role ID', value: squadRole },
+          { name: 'Removed', value: success.map(x => `<@${x}>`).join(',') || "None" },
+          { name: 'Failed to remove', value: fail.map(x => `<@${x}>`).join(',') || "None" },
+        ],
+      }});
   }
 
   function getUpcomingDeadline() {
     const deadline = new Date();
-    
-    // deadline.setMinutes(deadline.getMinutes() + 1); return deadline; // for testing
-
     deadline.setUTCHours(15); //  15 UTC = midnight in Japan
     deadline.setUTCMinutes(0);
     deadline.setUTCSeconds(0);
@@ -97,7 +143,7 @@ module.exports = function feather(requires)
    * @param {*} message The message that was reacted to
    * @param {*} emoji The that was used as a reaction
    */
-  function onReadingReportReaction(message, emoji) {
+  async function onReadingReportReaction(message, emoji) {
     //  only process reactions in the reading reports channel
     if (message.channel.id !== reportsChannel)
       return;
@@ -106,13 +152,17 @@ module.exports = function feather(requires)
     if (emoji.name !== '✅')
       return;
 
-    bot.getMessage(message.channel.id, message.id).then(fullMessage => {
-      const checks = fullMessage.reactions['✅'] || {count: 0};
-      if (checks.count != 1)
-        return; //  only take action the first time somebody reacts
-      
-      feather.approve(fullMessage.member);
-    });
+    const fullMessage = await bot.getMessage(message.channel.id, message.id);
+    const checks = fullMessage.reactions['✅'] || {count: 0};
+    if (checks.count != 1)
+      return; //  only take action the first time somebody reacts
+    
+    const success = await feather.approve(fullMessage.member, fullMessage.author);
+    if (success) {
+      //  if someone blocked the bot for some reason, this will fail
+      //  but we probably don't really care
+      try { await fullMessage.addReaction('✅'); } catch { }
+    }
   }
 
   return feather;

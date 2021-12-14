@@ -111,6 +111,20 @@ function addPrivateLogChannel() {
   });
 }
 
+// get and set the info log channel id
+function addInfoLogChannel() {
+  return new Promise((resolve, reject) => {
+    rl.question('What is the ID of the info log channel? ', (infoLogChannel) => {
+      addSetting('info_log_channel', infoLogChannel).then(() => {
+        rl.write('Info log channel ID stored\n');
+        resolve();
+      }).catch((err) => {
+        reject(`There was an error when trying to store the info log channel: ${err}\n`);
+      });
+    });
+  });
+}
+
 // get and set the public log channel id
 function addPublicLogChannel() {
   return new Promise((resolve, reject) => {
@@ -142,8 +156,8 @@ function addWarnRole() {
 // get and set the muted role id
 function addMutedRole() {
   return new Promise((resolve, reject) => {
-    rl.question('What is the ID of the muted role? ', (mutedRoleId) => {
-      addSetting('muted_role_id', mutedRoleId).then(() => {
+    rl.question('What is the ID of the muted role? ', (muteRoleId) => {
+      addSetting('mute_role_id', muteRoleId).then(() => {
         rl.write('Muted role ID stored\n');
         resolve();
       }).catch((err) => {
@@ -181,23 +195,18 @@ function addreadingChannel() {
   });
 }
 
-addHome().then(() => {
-  addPrivateLogChannel().then(() => {
-    addPublicLogChannel().then(() => {
-      addWarnRole().then(() => {
-        addMutedRole().then(() => {
-          Promise.all([addHighPerm(), addLowPerm()]).then(() => {
-            addReadingRole().then(() => {
-              addreadingChannel().then(() => {
-                rl.close();
-              });
-            });
-          });
-        });
-      });
-    });
-  });
-});
+(async function() {
+  await addHome()
+  await addPrivateLogChannel();
+  await addPublicLogChannel();
+  await addInfoLogChannel();
+  await addWarnRole();
+  await addMutedRole();
+  await Promise.all([addHighPerm(), addLowPerm()]);
+  await addReadingRole()
+  await addreadingChannel()
+  rl.close();
+})();
 
 // graceful close message
 rl.on('close', () => {

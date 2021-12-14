@@ -12,7 +12,7 @@ module.exports = function command(requires)
     longDescription: 'Shows animated stroke order image of given kanji. Also works on kana and some other miscellaneous Japanese characters.',
     usages: ['`%prefixso {kanji}` ― Returns stroke order of {kanji}.'],
     permission: 'public',
-    action: function(details)
+    action: async function(details)
     {
       let bot = requires.bot;
       let info = requires.info;
@@ -35,10 +35,11 @@ module.exports = function command(requires)
         });
       };
 
-      if(details.input === '') {return;}
-      else {
-        searchKanji(details.args[1]);
-      }
+      if(details.input === '')
+        return;
+      
+      await bot.sendChannelTyping(details.channelID);  
+      searchKanji(details.args[1]);
     }
   }, requires);
 };
