@@ -1,7 +1,6 @@
 'use strict';
 const Command = require('../structures/Command');
 
-//Kills the bot, just in case it's acting up ;)
 module.exports = function command(requires) {
   return new Command({
     name: 'Reading Squad Reset',
@@ -11,11 +10,23 @@ module.exports = function command(requires) {
     longDescription: 'Post a message in the reports channel, clear roles from lapsed users, set new deadline', 
     usages: ['`%rsreset`'], 
     permission: 'low',
-    action: async function() {
-        const {info} = requires;
-        const readingSquad = info.utility.useSource('readingSquad');
-        await info.db.removeTimerType('reading');
-        await readingSquad.reset();
+    action: async function(details) {
+        const {info, bot} = requires;
+        try {
+          const readingSquad = info.utility.useSource('readingSquad');
+          await info.db.removeTimerType('reading');
+          await readingSquad.reset();
+        } catch (e) {
+          await bot.createMessage(details.channelID, {
+            embed: {
+              title: 'Command resulted in an error',
+              color: info.utility.red,
+              fields: [
+                { name: 'Details', value: e.toString() },
+              ],
+            }
+          });
+        }
     }
   }, requires);
 };

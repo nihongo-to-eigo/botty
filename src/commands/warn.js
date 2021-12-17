@@ -63,7 +63,7 @@ module.exports = function command(requires) {
                     fields: [
                       { name: 'User', value: `<@${warnedUser.id}>`},
                       { name: 'Details', value: e.toString() },
-                      { name: "Role ID", value: muteRole },
+                      { name: "Role ID", value: warnRole },
                     ],
                   }
               });
