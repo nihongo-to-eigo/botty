@@ -41,11 +41,11 @@ module.exports = function command(requires) {
               embed: {
                 title: 'Log',
                 fields: [
-                  {name: 'User', value: details.args[1]},
-                  {name: 'Action', value: 'warn'}
-                  ,{name: 'Reason', value: reason},
-                  {name: 'Message Link', value: details.link},
-                  {name: 'Responsible Mod', value: `<@${details.userID}>`}
+                  { name: 'User', value: details.args[1] },
+                  { name: 'Action', value: 'warn' },
+                  { name: 'Reason', value: reason },
+                  { name: 'Message Link', value: details.link },
+                  { name: 'Responsible Mod', value: `<@${details.userID}>` },
                 ]
               }
             });
@@ -61,9 +61,9 @@ module.exports = function command(requires) {
                     title: 'Warn role could not be added',
                     color: info.utility.red,
                     fields: [
-                      {name: 'User', value: `<@${warnedUser.id}>`},
-                      { name: 'Details', value: e.toString() }
-                      { name: "Role ID", value: muteRole }
+                      { name: 'User', value: `<@${warnedUser.id}>`},
+                      { name: 'Details', value: e.toString() },
+                      { name: "Role ID", value: muteRole },
                     ],
                   }
               });
