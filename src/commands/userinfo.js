@@ -18,13 +18,13 @@ module.exports = function command(requires) {
       const userFeather = info.utility.useSource('user');
 
       if(details.input === '') {
-        const { embed } = await userFeather.getInfo(details, details.userID);
-        bot.createMessage(details.channelID, {embed });
+        const {embed} = await userFeather.getInfo(details, details.userID);
+        bot.createMessage(details.channelID, {embed});
       } else if(details.args.length == 2) {
         let uid = info.utility.stripUID(details.args[1]);
         if(uid) {
-          const { embed } = await userFeather.getInfo(details, uid);
-          bot.createMessage(details.channelID, { embed });
+          const {embed} = await userFeather.getInfo(details, uid);
+          bot.createMessage(details.channelID, {embed});
         }
       } else {
         bot.createMessage(details.channelID, {message: 'Please look at the help menu to see how to properly use the command.'});

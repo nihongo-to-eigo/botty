@@ -24,7 +24,7 @@ module.exports = function command(requires) {
         if(nameParse !== null) {
           let tagName = nameParse[0].replace(': ', '');
           let content = details.input.replace(nameParse[0], '');
-          info.db.addTag(tagName, content).then((newTag) => {
+          info.db.addTag(tagName, content).then(() => {
             let emb = {};
             emb.title = 'Success';
             emb.description = `You have added the __${tagName}__ tag.`;

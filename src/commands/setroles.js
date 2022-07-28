@@ -20,7 +20,7 @@ module.exports = function command(requires) {
         return;
       } else {
         info.utility.getRoleByName(details.serverID, details.input).then((roleID) => {
-          info.db.addRole(roleID, details.input).then((dbrole) => {
+          info.db.addRole(roleID, details.input).then(() => {
             let emb = {};
             emb.title = 'Success';
             emb.description = `You have added the __${details.input}__ role to the user selectable roles.`;
@@ -28,7 +28,7 @@ module.exports = function command(requires) {
             bot.createMessage(details.channelID, {embed: emb});
           }).catch((err) => {
             if(err.errorType === 'uniqueViolated') {
-              info.db.removeRoleByID(roleID).then((numRemoved) => {
+              info.db.removeRoleByID(roleID).then(() => {
                 let remEmb = {};
                 remEmb.title = 'Removed';
                 remEmb.description = `You have removed the __${details.input}__ role from the user selectable roles`;

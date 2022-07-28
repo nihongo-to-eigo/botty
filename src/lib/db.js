@@ -354,44 +354,5 @@ module.exports = function utility(requires) {
     });
   };
 
-  /**
-   * DB setup for reading squad
-   */
-  db.readingSquad = new Datastore('./src/lib/databases/readingSquad.db');
-  db.readingSquad.loadDatabase();
-  db.readingSquad.ensureIndex({fieldName: 'userID', unique: true});
-  //autocompaction every 10 minutes: _id is the user id
-  db.readingSquad.persistence.setAutocompactionInterval(600000);
-  db.addToReadingSquad = (userID) => {
-    return new Promise((resolve, reject) => {
-      db.readingSquad.insert({userID}, (err, docs) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(docs);
-      });
-    });
-  };
-  db.listApprovedReadingSquad = () => {
-    return new Promise((resolve, reject) => {
-      db.readingSquad.find({}, (err, docs) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(docs.map(x => x.userID));
-      });
-    });
-  };
-  db.clearReadingSquad = () => {
-    return new Promise((resolve, reject) => {
-      db.readingSquad.remove({}, {multi: true}, (err, docs) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(docs);
-      });
-    });
-  };
-
   return db;
 };

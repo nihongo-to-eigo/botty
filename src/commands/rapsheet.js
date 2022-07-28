@@ -45,11 +45,11 @@ module.exports = function command(requires) {
         if(details.args.length === 2) {
           const userTest = info.utility.stripUID(details.args[1]);
           if(userTest) {
-            const { embed, user } = await userFeather.getInfo(details, userTest);
+            const {embed, user} = await userFeather.getInfo(details, userTest);
             const stuff = await info.db.getInfractions(userTest, userTest);
 
             if(stuff === null) {
-              bot.createMessage(details.channelID, { embed });
+              bot.createMessage(details.channelID, {embed});
             } else {
               embed.fields = processInfractions(stuff.infractions, userTest).concat(embed.fields);
               embed.color = 0xFF0000;

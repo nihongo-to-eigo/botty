@@ -7,10 +7,8 @@
 const Loader = require('./Loader');
 const fs = require('fs');
 
-class CommandLoader extends Loader
-{
-  constructor(location)
-  {
+class CommandLoader extends Loader {
+  constructor(location) {
     super(location);
     this.privates = [];
   }
@@ -23,24 +21,20 @@ class CommandLoader extends Loader
    * @param {Object} passing.bObj - Bot object (for custom emitters).
    * @returns {Promise<Object>} - Promise returns an object containing the file names as keys.
    */
-  load(passing)
-  {
+  load(passing) {
     let dir = this.location;
-    return new Promise((resolve, reject) =>
-    {
-      fs.readdir(dir, (err, files) =>
-      {
+    return new Promise((resolve, reject) => {
+      fs.readdir(dir, (err, files) => {
         if(err) reject(err);
-        let filteredFiles = files.filter((file) => { return file.endsWith('.js'); });
-        filteredFiles.forEach((fName) =>
-        {
+        let filteredFiles = files.filter((file) => {
+          return file.endsWith('.js'); 
+        });
+        filteredFiles.forEach((fName) => {
           let itemName = fName.slice(0,-3);
           this.items[itemName] = require(`${dir}/${fName}`)(passing);
         });
-        Object.keys(this.items).forEach((comm) =>
-        {
-          if(this.items[comm].getPerm() === 'private')
-          {
+        Object.keys(this.items).forEach((comm) => {
+          if(this.items[comm].getPerm() === 'private') {
             this.privates.push(comm);
           }
         });

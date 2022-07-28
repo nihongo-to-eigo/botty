@@ -14,6 +14,7 @@ module.exports = function command(requires) {
     action: function(details) {
       let bot = requires.bot;
       
+      // eslint-disable-next-line no-unused-vars
       const echo = function(str) {
         bot.createMessage(details.channelID, {content: str});
       };
@@ -23,9 +24,7 @@ module.exports = function command(requires) {
         try {
           bot.createMessage(details.channelID, {content: eval(details.input)});
         } catch(err) {
-          bot.createMessage(details.channelID, {
-            content: err
-          });
+          bot.createMessage(details.channelID, {content: err});
         }
       }
     }

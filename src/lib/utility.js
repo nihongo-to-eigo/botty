@@ -82,7 +82,7 @@ module.exports = (requires) => {
     let userID = false;
     if (userString !== '') {
       //did we provide a mention?
-      let regexp = /<@!*([a-zA-Z0-9]+)>/g;
+      let regexp = /(?:<@!*)?([a-zA-Z0-9]+)(?:>)?/g;
       let match = regexp.exec(userString);
       if (match) {
         userID = match[1];
@@ -183,6 +183,5 @@ module.exports = (requires) => {
   
   utilities.red = 0xFF0000;
   utilities.green = 0x25bf06;
-  utilities.readingSquadCoolBlue = 0x0CCDD3;
   return utilities;
 };

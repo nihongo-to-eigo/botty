@@ -10,10 +10,8 @@ module.exports = function feather(requires) {
   feather.getInfo = async function(details, uid) {
     let embed = {};
 
-    let inServer = true;
     let user = bot.users.get(uid);
     if (!user) {
-      inServer = false;
       user = await bot.getRESTUser(uid);
     }
 
@@ -36,7 +34,7 @@ module.exports = function feather(requires) {
         embed.fields.push({name: 'Playing:', value: member.game.name});
     }
 
-    return { embed, user };
+    return {embed, user};
   };
 
   //helper functions

@@ -190,16 +190,6 @@ class Bot extends EventEmitter {
       processCommand(command, details);
     }
     
-    function handleDisabled(details) {
-      bot.sendMessage({
-        to: details.channelID,
-        embed: {
-          title: 'Disabled',
-          description: 'Looks like that command was disabled'
-        }
-      });
-    }
-    
     function processCommand(command, details) {
       const commandLevel = command.getPerm();
       if (commandLevel === 'public') {
