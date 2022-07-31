@@ -13,8 +13,8 @@ module.exports = function command(requires) {
     action: async function(details) {
       const bot = requires.bot;
       const info = requires.info;
-      const wholeTest = /(?:<@!*)?([a-zA-Z0-9]+)(?:>)?\s([一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]+|[a-zA-Z0-9]+|[ａ-ｚＡ-Ｚ０-９]+|[々〆〤]+|.+)+/g;
-      const idAndSpace = /(?:<@!*)?([a-zA-Z0-9]+)(?:>)?\s/g;
+      const wholeTest = /^(?:<@!*)?([a-zA-Z0-9]+)(?:>)?\s([一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]+|[a-zA-Z0-9]+|[ａ-ｚＡ-Ｚ０-９]+|[々〆〤]+|.+)+/g;
+      const idAndSpace = /^(?:<@!*)?([a-zA-Z0-9]+)(?:>)?\s/g;
       
       if(details.input === ''
           || !wholeTest.test(details.input)
@@ -32,13 +32,13 @@ module.exports = function command(requires) {
           const reason = details.input.replace(idAndSpace, '');
           info.db.addInfraction(userTest, 'warn', new Date, reason);
             
-          bot.createMessage(details.channelID,{content:`<@${details.args[1]}>, you have been warned for: ${reason}`});
+          bot.createMessage(details.channelID,{content:`<@${userTest}>, you have been warned for: ${reason}`});
 
           bot.createMessage(info.settings.private_log_channel, {
             embed: {
               title: 'Log',
               fields: [
-                {name: 'User', value: details.args[1]},
+                {name: 'User', value: `<@${userTest}>`},
                 {name: 'Action', value: 'warn'},
                 {name: 'Reason', value: reason},
                 {name: 'Message Link', value: details.link},

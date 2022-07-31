@@ -15,8 +15,8 @@ module.exports = function command(requires) {
       const bot = requires.bot;
       const info = requires.info;
       const timeReg = /\d+(d|m|h)/g;
-      const wholeTest = /(?:<@!*)?([a-zA-Z0-9]+)(?:>)?\s\d+(d|m|h)\s\w.+/g;
-      const idAndTime = /(?:<@!*)?([a-zA-Z0-9]+)(?:>)?\s\d+(d|m|h)\s/g;
+      const wholeTest = /^(?:<@!*)?([a-zA-Z0-9]+)(?:>)?\s\d+(d|m|h)\s\w.+/g;
+      const idAndTime = /^(?:<@!*)?([a-zA-Z0-9]+)(?:>)?\s\d+(d|m|h)\s/g;
 
       if(details.input === ''
           || !wholeTest.test(details.input)

@@ -14,8 +14,8 @@ module.exports = function command(requires) {
     action: async function(details) {
       const bot = requires.bot;
       const info = requires.info;
-      const wholeTest = /(?:<@!*)?([a-zA-Z0-9]+)(?:>)?\s*\w.+/g;
-      const idPattern = /(?:<@!*)?([a-zA-Z0-9]+)(?:>)?\s/g;
+      const wholeTest = /^(?:<@!*)?([a-zA-Z0-9]+)(?:>)?\s*\w.+/g;
+      const idPattern = /^(?:<@!*)?([a-zA-Z0-9]+)(?:>)?\s/g;
       //processes input
       let userTest;
       if(details.input === ''
@@ -36,7 +36,7 @@ module.exports = function command(requires) {
         await bot.createMessage(info.settings.private_log_channel, {
           embed: {
             title: 'Log', fields: [
-              {name: 'User', value: details.args[1]},
+              {name: 'User', value: `<@${userTest}>`},
               {name: 'Action', value: 'ban'},
               {name: 'Reason', value: reason},
               {name: 'Message Link', value: details.link},
