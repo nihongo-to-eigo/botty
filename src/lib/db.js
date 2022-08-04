@@ -1,7 +1,7 @@
 //setting up the database(s)
 'use strict';
 module.exports = function utility(requires) {
-  const {bot} = requires.bot;
+  const {bot} = requires;
 
   const Datastore = require('nedb');
   const db = {};
@@ -238,6 +238,16 @@ module.exports = function utility(requires) {
       });
     });
   };
+  db.removeTimerType = (type) => {
+    return new Promise((resolve, reject) => {
+      db.timers.remove({type}, {multi: true}, (err, docsChanged) => {
+        if(err) {
+          reject(err);
+        }
+        resolve(docsChanged);
+      });
+    });
+  };
   db.findPassed = (date) => {
     return new Promise((resolve, reject) => {
       db.timers.find({timeEnd: {$lt: date}}, (err, docs) => {
@@ -337,45 +347,6 @@ module.exports = function utility(requires) {
     return new Promise((resolve, reject) => {
       db.settings.find({}, (err, docs) => {
         if(err) {
-          reject(err);
-        }
-        resolve(docs);
-      });
-    });
-  };
-
-  /**
-   * DB setup for reading squad
-   */
-  db.readingSquad = new Datastore('./src/lib/databases/readingSquad.db');
-  db.readingSquad.loadDatabase();
-  db.readingSquad.ensureIndex({fieldName: 'userID', unique: true});
-  //autocompaction every 10 minutes: _id is the user id
-  db.readingSquad.persistence.setAutocompactionInterval(600000);
-  db.addToReadingSquad = (userID) => {
-    return new Promise((resolve, reject) => {
-      db.readingSquad.insert({userID}, (err, docs) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(docs);
-      });
-    });
-  };
-  db.listApprovedReadingSquad = () => {
-    return new Promise((resolve, reject) => {
-      db.readingSquad.find({}, (err, docs) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(docs.map(x => x.userID));
-      });
-    });
-  };
-  db.clearReadingSquad = () => {
-    return new Promise((resolve, reject) => {
-      db.readingSquad.remove({}, {multi: true}, (err, docs) => {
-        if (err) {
           reject(err);
         }
         resolve(docs);

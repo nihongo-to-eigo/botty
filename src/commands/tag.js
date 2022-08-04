@@ -12,9 +12,10 @@ module.exports = function command(requires) {
     usages: ['`%prefixt` ― Shows a list of all available tags',
       '`%prefixt {tag name}` ― Retrieves {tag name} '], 
     permission: 'public',
-    action: function(details) {
+    action: async function(details) {
       const bot = requires.bot;
       const info = requires.info;
+      await bot.sendChannelTyping(details.channelID);
 
       //processes input
       if(details.input === '') {

@@ -12,9 +12,14 @@ module.exports = (requires) => {
       }
     }
   }
-  function resetReadingSquad() {
-    const readingSquad = info.utility.useSource('readingSquad');
-    readingSquad.reset();
+  function offtopUser(userID) {
+    const user = bot.guilds.get(info.settings.home_server_id).members.get(userID);
+    if(user !== undefined) {
+      const isOntop = user.roles.includes(info.settings.ontop_role_id);
+      if(isOntop) {
+        user.removeRole(info.settings.ontop_role_id, 'Ontop timer expired');
+      }
+    }
   }
   function processPassed(passed) {
     passed.forEach(timer => {
@@ -22,8 +27,8 @@ module.exports = (requires) => {
       case 'mute':
         unmuteUser(timer.userID);
         break;
-      case 'reading':
-        resetReadingSquad();
+      case 'ontop':
+        offtopUser(timer.userID);
         break;
       }
     });

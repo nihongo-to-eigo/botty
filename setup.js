@@ -111,6 +111,20 @@ function addPrivateLogChannel() {
   });
 }
 
+// get and set the info log channel id
+function addInfoLogChannel() {
+  return new Promise((resolve, reject) => {
+    rl.question('What is the ID of the info log channel? ', (infoLogChannel) => {
+      addSetting('info_log_channel', infoLogChannel).then(() => {
+        rl.write('Info log channel ID stored\n');
+        resolve();
+      }).catch((err) => {
+        reject(`There was an error when trying to store the info log channel: ${err}\n`);
+      });
+    });
+  });
+}
+
 // get and set the public log channel id
 function addPublicLogChannel() {
   return new Promise((resolve, reject) => {
@@ -125,25 +139,11 @@ function addPublicLogChannel() {
   });
 }
 
-// get and set the warn role id
-function addWarnRole() {
-  return new Promise((resolve, reject) => {
-    rl.question('What is the ID of the warn role? ', (warnRoleId) => {
-      addSetting('warn_role_id', warnRoleId).then(() => {
-        rl.write('Warn role ID stored\n');
-        resolve();
-      }).catch((err) => {
-        reject(`There was an error trying to store the warned role ID: ${err}`);
-      });
-    });
-  });
-}
-
 // get and set the muted role id
 function addMutedRole() {
   return new Promise((resolve, reject) => {
-    rl.question('What is the ID of the muted role? ', (mutedRoleId) => {
-      addSetting('muted_role_id', mutedRoleId).then(() => {
+    rl.question('What is the ID of the muted role? ', (muteRoleId) => {
+      addSetting('mute_role_id', muteRoleId).then(() => {
         rl.write('Muted role ID stored\n');
         resolve();
       }).catch((err) => {
@@ -153,51 +153,30 @@ function addMutedRole() {
   });
 }
 
-// get and set the reading squad role id
-function addReadingRole() {
+// get and set the ontopic role id
+function adOntopicRole() {
   return new Promise((resolve, reject) => {
-    rl.question('What is the ID of the reading squad role? ', (squadRoleId) => {
-      addSetting('reading_squad_role_id', squadRoleId).then(() => {
-        rl.write('Reading squad role ID stored\n');
+    rl.question('What is the ID of the On-topic role? ', (ontopRoleId) => {
+      addSetting('ontop_role_id', ontopRoleId).then(() => {
+        rl.write('On-topic role ID stored\n');
         resolve();
       }).catch((err) => {
-        reject(`There was an error trying to store the reading squad role ID: ${err}`);
+        reject(`There was an error trying to store the On-topic role ID: ${err}`);
       });
     });
   });
 }
 
-// get and set the reading squad reports channel id
-function addreadingChannel() {
-  return new Promise((resolve, reject) => {
-    rl.question('What is the ID of the reading reports channel? ', (reportsChannelId) => {
-      addSetting('reading_reports_channel', reportsChannelId).then(() => {
-        rl.write('Reading reports channel ID stored\n');
-        resolve();
-      }).catch((err) => {
-        reject(`There was an error trying to store the reading reports channel ID: ${err}`);
-      });
-    });
-  });
-}
-
-addHome().then(() => {
-  addPrivateLogChannel().then(() => {
-    addPublicLogChannel().then(() => {
-      addWarnRole().then(() => {
-        addMutedRole().then(() => {
-          Promise.all([addHighPerm(), addLowPerm()]).then(() => {
-            addReadingRole().then(() => {
-              addreadingChannel().then(() => {
-                rl.close();
-              });
-            });
-          });
-        });
-      });
-    });
-  });
-});
+(async function() {
+  await addHome();
+  await addPrivateLogChannel();
+  await addPublicLogChannel();
+  await addInfoLogChannel();
+  await addMutedRole();
+  await adOntopicRole();
+  await Promise.all([addHighPerm(), addLowPerm()]);
+  rl.close();
+})();
 
 // graceful close message
 rl.on('close', () => {

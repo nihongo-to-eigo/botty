@@ -7,53 +7,50 @@ module.exports = function feather(requires) {
   //requires
   const bot = requires.bot;
   //feather functions
-  feather.getInfo = function(details, uid) {
-    let emb = {};
-    emb.title = bot.users.get(uid).username + '\'s Info';
-    emb.description = '\n _ _';
-    let server = bot.guilds.get(details.serverID);
-    let extras = false;
-    if(server != undefined) {
-      extras = true;
-    }
-    let thumbnail = {url: getAvatar(uid)};
-    emb.thumbnail = thumbnail;
+  feather.getInfo = async function(details, uid) {
+    let embed = {};
 
-    let fields = [];
-
-    if(extras) {
-      if(server.members.get(uid).nick) {
-        let nickname = {name: 'Nickname:', value: server.members.get(uid).nick};
-        fields.push(nickname);
-      }          
-      let joined = {name: 'Joined', value: getJoinedTime(details, uid)};
-      fields.push(joined);
+    let user = bot.users.get(uid);
+    if (!user) {
+      user = await bot.getRESTUser(uid);
     }
 
-    let created = {name: 'Created:', value: getCreatedTime(uid)};
-    fields.push(created);
-    if(server.members.get(uid).game != null) {
-      let playing = {name: 'Playing:', value: server.members.get(uid).game.name};
-      fields.push(playing);
+    embed.title = user.username + '\'s Info';
+    embed.description = '\n _ _';
+    embed.thumbnail = {url: getAvatar(uid, user)};
+    embed.fields = [];
+
+    const server = bot.guilds.get(details.serverID);
+    const member = server && server.members.get(uid);
+
+    if(member) {
+      if(member.nick)
+        embed.fields.push({name: 'Nickname:', value: member.nick});
+
+      embed.fields.push({name: 'Joined', value: getJoinedTime(member)});
+      embed.fields.push({name: 'Created:', value: getCreatedTime(uid)});
+
+      if(member.game)
+        embed.fields.push({name: 'Playing:', value: member.game.name});
     }
 
-    emb.fields = fields;
-    return emb;
+    return {embed, user};
   };
+
   //helper functions
   const getCreatedTime = function(uid) {
     let t = (uid / 4194304) + 1420070400000;
     let created = new Date(t);
     return `${created.toUTCString()}`;
   };
-  const getJoinedTime = function(details, uid) {
-    let d = new Date(bot.guilds.get(details.serverID).members.get(uid).joinedAt);
+  const getJoinedTime = function(member) {
+    let d = new Date(member.joinedAt);
     return `${d.toUTCString()}`;
   };
-  const getAvatar = function(uid) {
+  const getAvatar = function(uid, user) {
     let ava = undefined;
-    let userAva = bot.users.get(uid).avatar;
-    if(userAva === null) return `https://cdn.discordapp.com/embed/avatars/${parseInt(bot.users.get(uid).discriminator, 10) % 5}.png`;
+    let userAva = user.avatar;
+    if(userAva === null) return `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator, 10) % 5}.png`;
     if(userAva.startsWith('a_')) {
       ava = 'https://cdn.discordapp.com/avatars/' +uid+'/'+userAva+'.gif';
     } else {

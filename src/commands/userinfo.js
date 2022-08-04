@@ -12,17 +12,19 @@ module.exports = function command(requires) {
     usages: ['`%prefixui` ― Gets info on sender',
       '`%prefixui {user}` ― Gets info on specified user.'],
     permission: 'public',
-    action: function(details) {
+    action: async function(details) {
       const bot = requires.bot;
       const info = requires.info;
       const userFeather = info.utility.useSource('user');
 
       if(details.input === '') {
-        bot.createMessage(details.channelID, {embed: userFeather.getInfo(details, details.userID)});
+        const {embed} = await userFeather.getInfo(details, details.userID);
+        bot.createMessage(details.channelID, {embed});
       } else if(details.args.length == 2) {
         let uid = info.utility.stripUID(details.args[1]);
         if(uid) {
-          bot.createMessage(details.channelID, {embed: userFeather.getInfo(details, uid)});
+          const {embed} = await userFeather.getInfo(details, uid);
+          bot.createMessage(details.channelID, {embed});
         }
       } else {
         bot.createMessage(details.channelID, {message: 'Please look at the help menu to see how to properly use the command.'});

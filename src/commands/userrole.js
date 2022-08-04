@@ -39,13 +39,13 @@ module.exports = function command(requires) {
               let memberRoles = bot.guilds.get(details.serverID).members.get(details.userID).roles;
               let roleSearch = memberRoles.find(memberRole => memberRole === roleID);
               if(roleSearch === undefined) {
-                bot.guilds.get(details.serverID).members.get(details.userID).addRole(roleID).then((result) => {
+                bot.guilds.get(details.serverID).members.get(details.userID).addRole(roleID).then(() => {
                   let emb = {};
                   emb.title = 'Success';
                   emb.description = `The __${details.input}__ role has been added.`;
                   emb.color = info.utility.green;
                   bot.createMessage(details.channelID, {embed: emb});
-                }).catch((err) => {
+                }).catch(() => {
                   bot.createMessage(details.channelID, {
                     embed: {
                       title: 'Error', description: 'Error adding role.',
@@ -54,14 +54,14 @@ module.exports = function command(requires) {
                   });
                 });
               } else {
-                bot.guilds.get(details.serverID).members.get(details.userID).removeRole(roleID).then((result) => {
+                bot.guilds.get(details.serverID).members.get(details.userID).removeRole(roleID).then(() => {
                   bot.createMessage(details.channelID, {
                     embed: {
                       title: 'Removed', description: `The __${details.input}__ role has been removed.`,
                       color: info.utility.red
                     }
                   });
-                }).catch((err) => {
+                }).catch(() => {
                   bot.createMessage(details.channelID, {
                     embed: {
                       title: 'Error', description: 'Error removing role.',
@@ -72,7 +72,7 @@ module.exports = function command(requires) {
               }
             }
 
-          }).catch((err) => {
+          }).catch(() => {
             bot.createMessage(details.channelID, {
               embed: {
                 title: 'Error', description: 'Role is not self assignable.',
@@ -81,8 +81,7 @@ module.exports = function command(requires) {
             });
           });
           
-        }).catch((err) =>
-        {
+        }).catch(() => {
           bot.createMessage(details.channelID, {
             embed: {
               title: 'Error', description: 'Role does not exist.',

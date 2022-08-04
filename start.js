@@ -5,4 +5,5 @@ config.feathers = require('./feathers.json');
 const appSettings = require('./package.json');
 config.version = appSettings.version;
 
+// eslint-disable-next-line no-unused-vars
 const bot = new Bot({config: config});

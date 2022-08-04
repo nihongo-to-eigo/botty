@@ -22,7 +22,7 @@ module.exports = function command(requires) {
       emb.description = utility.filter('You can DM the bot :heart:\nUse `%prefixhelp {command}` to get more detailed information about a command.');
       
       const listCommands = function(userLevel) {
-        Object.keys(info.commands).forEach((commandName,index) => {
+        Object.keys(info.commands).forEach((commandName) => {
           let command = info.commands[commandName];
           let commandLevel = command.getPerm();                
           if(!utility.hasPermission(commandLevel, userLevel)) {

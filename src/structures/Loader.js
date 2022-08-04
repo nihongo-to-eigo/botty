@@ -6,14 +6,12 @@
 
 const fs = require('fs');
 
-class Loader
-{
+class Loader {
   /**
    * Constructor for Loader class.
    * @param {String} location - Location of the files to be loaded.
    */
-  constructor(location)
-  {
+  constructor(location) {
     //required members
     this.location = location;
     //other members
@@ -28,17 +26,15 @@ class Loader
    * @param {Object} passing.bObj - Bot object (for custom emitters).
    * @returns {Promise<Object>} - Promise returns an object containing the file names as keys.
    */
-  load(passing)
-  {
+  load(passing) {
     let dir = this.location;
-    return new Promise((resolve, reject) =>
-    {
-      fs.readdir(dir, (err, files) =>
-      {
+    return new Promise((resolve, reject) => {
+      fs.readdir(dir, (err, files) => {
         if(err) reject(err);
-        let filteredFiles = files.filter((file) => { return file.endsWith('.js'); });
-        filteredFiles.forEach((fName) =>
-        {
+        let filteredFiles = files.filter((file) => {
+          return file.endsWith('.js'); 
+        });
+        filteredFiles.forEach((fName) => {
           let itemName = fName.slice(0,-3);
           this.items[itemName] = require(`${dir}/${fName}`)(passing);
         });
